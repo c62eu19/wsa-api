@@ -1,7 +1,9 @@
 package com.mydrawer.webservice;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -41,12 +43,12 @@ public class ContactUsWS extends HttpServlet
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String emailFrom = jo.get("emailFrom").toString();
-			String emailSubj = jo.get("emailSubj").toString();
-			String emailMsg = jo.get("emailMsg").toString();
+			String msgFrom = jo.get("msgFrom").toString();
+			String msgSubj = jo.get("msgSubj").toString();
+			String msg = jo.get("msg").toString();
 
-//			int statusCd = 
-//				this.addContactUs(request, emailFrom, emailSubj, emailMsg);
+			int statusCd = 
+				this.addContactUs(msgFrom, msgSubj, msg);
 
 			String jsonResponse = "";
 
@@ -65,17 +67,39 @@ public class ContactUsWS extends HttpServlet
 	}
 
 	private int addContactUs(
-		HttpServletRequest request,
-		String argEmailFrom,
-		String argEmailSubj,
-		String argEmailMsg)
+		String argMsgFrom,
+		String argMsgSubj,
+		String argMsg)
 			throws IOException 
 	{
+		BufferedWriter bw = null;
+		FileWriter fw = null;
 
 		int statusCd = 0;
 
 		try
 		{
+			String contactUsFile = 
+				System.getenv("OPENSHIFT_DATA_DIR") + "contactus/contact-us.txt";
+
+			File file = new File(contactUsFile);
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			// true = append file
+			fw = new FileWriter(file.getAbsoluteFile(), true);
+			bw = new BufferedWriter(fw);
+
+			String data = 
+				argMsgFrom + "\n" +
+				argMsgSubj + "\n" +
+				argMsg + 
+				"\n";
+
+			bw.write(data);
 		}
 		catch(Exception e)
 		{
@@ -84,7 +108,11 @@ public class ContactUsWS extends HttpServlet
 		}
 		finally
 		{
+			if (bw != null)
+				bw.close();
 
+			if (fw != null)
+				fw.close();
 		}
 
 		return statusCd;
