@@ -89,13 +89,14 @@ public class ContactUsWS extends HttpServlet
 
 			// true = append file
 			fw = new FileWriter(file.getAbsoluteFile(), true);
+
 			bw = new BufferedWriter(fw);
 
 			String data = 
-				argMsgFrom + "\n" +
-				argMsgSubj + "\n" +
-				argMsg + 
-				"\n";
+				"\r\n" +
+				argMsgFrom + "\r\n" +
+				argMsgSubj + "\r\n" +
+				argMsg;
 
 			bw.write(data);
 		}
