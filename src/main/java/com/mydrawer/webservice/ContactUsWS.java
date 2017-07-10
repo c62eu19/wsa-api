@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.utility.FileUtility;
-
 @WebServlet(name = "contactusws",urlPatterns = {"/contactusws/*"})
 public class ContactUsWS extends HttpServlet
 {
@@ -37,7 +35,7 @@ public class ContactUsWS extends HttpServlet
 
 		try
 		{
-			String inputJSON = request.getParameter("inputArgs");
+			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);

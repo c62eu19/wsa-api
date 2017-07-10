@@ -43,8 +43,6 @@ public class AppServlet extends HttpServlet
 
 		PrintWriter writer = response.getWriter();
 
-System.out.println("I AM HERE");
-
 		try
 		{
 			String path = request.getRequestURI();
