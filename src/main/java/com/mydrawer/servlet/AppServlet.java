@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mydrawer.utility.FileUtility;
 
-@WebServlet(name = "mydrawer",urlPatterns = {"/mydrawer/*"})
+@WebServlet(name = "mydrawer",urlPatterns = {"/*"})
 public class AppServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 2857847752169838915L;
