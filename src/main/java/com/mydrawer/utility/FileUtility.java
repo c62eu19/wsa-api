@@ -74,4 +74,30 @@ public class FileUtility
 		return output;
 	}
 
+	public String getFileExtension(File argFile)
+	{
+		String fileExt = "";
+
+		try
+		{
+			// Get file Name first
+			String fileName = argFile.getName();
+
+			// If fileName do not contain "." or starts with "." then it is not a valid file
+			if(fileName.contains(".") && fileName.lastIndexOf(".")!= 0)
+			{
+				fileExt = fileName.substring(fileName.lastIndexOf(".")+1);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".getFileExtension(): " + e);
+		}
+		finally
+		{
+		}
+
+		return fileExt;
+	}
+
 }

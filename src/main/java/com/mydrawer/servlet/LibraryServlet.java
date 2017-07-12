@@ -39,8 +39,6 @@ public class LibraryServlet extends HttpServlet
 		HttpServletResponse response) 
 			throws ServletException, IOException
 	{
-		response.setContentType("text/html");
-
 		PrintWriter writer = response.getWriter();
 
 		try
@@ -58,6 +56,22 @@ public class LibraryServlet extends HttpServlet
 			String libraryName = 
 				prop.getProperty(path,"");
 			File libraryFile = new File(System.getenv("OPENSHIFT_DATA_DIR") + libraryName);
+
+			String fileExt = fu.getFileExtension(libraryFile);
+
+			if(fileExt.equalsIgnoreCase("css"))
+			{
+				response.setContentType("text/css");
+			}
+			else if(fileExt.equalsIgnoreCase("js"))
+			{
+				response.setContentType("text/javascript");
+			}
+			else
+			{
+				response.setContentType("text/html");
+			}
+
 			String library = fu.readFile(libraryFile);
 
 			// Serve it

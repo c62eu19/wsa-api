@@ -47,6 +47,9 @@ public class AppServlet extends HttpServlet
 		{
 			String path = request.getRequestURI();
 
+			if(path == null || path.equals(""))
+				path = "/mydrawer";
+
 			// Load the pages properties file for this servlet to always get the latest
 			FileUtility fu = 
 				new FileUtility();
