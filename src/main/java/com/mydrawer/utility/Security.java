@@ -15,6 +15,12 @@ public class Security
 //        new byte[] {'T', 'h', 'e', 'B', 'e', 's', 't','S', 'e', 'c', 'r','e', 't', 'K', 'e', 'y'};
 		new byte[] {'M', 'a', 'r', 'm', 'a', 'l', 'a','d', 'e', 'S', 'k','i', 'e', 's', 'J', 'L'};
 
+	public static String getSalt() 
+	{
+		// Note: The leading and trailing pipes for parsing the actual value from the salt if needed
+		return "|^~s$&-e-&$z~^|";
+	}
+
 	public static String encrypt(String Data) 
 		throws Exception
 	{
