@@ -35,7 +35,7 @@ public class MemberDrawerDAO
 				"FROM member_drawer a, " +
 				 "member_tray b " +
 				"WHERE (mbr_sk = CAST(? AS integer)) AND " +
-				 "a.tra_sk = b.tra_sk) " +
+				 "(a.tra_sk = b.tra_sk) " +
 				"ORDER BY b.name";
 
 			ps = argCon.prepareStatement(sql);

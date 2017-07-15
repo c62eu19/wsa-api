@@ -96,7 +96,7 @@ public class SignUpWS extends HttpServlet
 						hm.put("statusCd","0");
 						hm.put("statusMsg","");
 						hm.put("mbrSkToken",mbrSkToken);
-						hm.put("name",name);
+						hm.put("mbrName",name);
 					}
 					else
 					{
@@ -104,7 +104,7 @@ public class SignUpWS extends HttpServlet
 						hm.put("statusCd","-1");
 						hm.put("statusMsg","There was an error in creating your account. Please try again.");
 						hm.put("mbrSkToken","-1");
-						hm.put("name","");
+						hm.put("mbrName","");
 					}
 				}
 				else
@@ -113,7 +113,7 @@ public class SignUpWS extends HttpServlet
 					hm.put("statusMsg","There already is a member with this same email and password. " +
 						"Please choose another email address.");
 					hm.put("mbrSkToken","-1");
-					hm.put("name","");
+					hm.put("mbrName","");
 				}
 			}
 			else
@@ -121,7 +121,7 @@ public class SignUpWS extends HttpServlet
 				hm.put("statusCd","-1");
 				hm.put("statusMsg","The entered Email is not a valid Email address.");
 				hm.put("mbrSkToken","-1");
-				hm.put("name","");
+				hm.put("mbrName","");
 			}
 
 			// Convert the hashmap to a JSON string
