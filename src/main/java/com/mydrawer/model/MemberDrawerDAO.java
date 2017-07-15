@@ -24,7 +24,7 @@ public class MemberDrawerDAO
 			String sql = 
 				"SELECT a.drw_sk, " +
 				 "a.mbr_sk, " + 
-				 "tra_sk, " + 
+				 "a.tra_sk, " + 
 				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
 				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
 				 "a.type_id, " + 
