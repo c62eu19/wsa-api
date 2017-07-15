@@ -34,7 +34,7 @@ public class MemberDrawerDAO
 				 "b.name " +
 				"FROM member_drawer a, " +
 				 "member_tray b " +
-				"WHERE (mbr_sk = CAST(? AS integer)) AND " +
+				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
 				 "(a.tra_sk = b.tra_sk) " +
 				"ORDER BY b.name";
 
