@@ -39,7 +39,7 @@ public class DrawerListWS extends HttpServlet
 
 			MemberDrawerService mds = new MemberDrawerService();
 
-			String jsonResponse = mds.getMemberDrawerList(request);
+			String jsonResponse = mds.getMemberDrawerList(request,"mbrSk");
 
 			out.println(jsonResponse);
 			out.flush();

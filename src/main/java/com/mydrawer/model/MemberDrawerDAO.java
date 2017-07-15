@@ -7,8 +7,10 @@ import com.mydrawer.bean.*;
 
 public class MemberDrawerDAO 
 {
-	public ArrayList selectMemberDrawerList(Connection argCon)
-		throws SQLException
+	public ArrayList selectMemberDrawerList(
+		Connection argCon,
+		String argMbrSk)
+			throws SQLException
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -37,6 +39,8 @@ public class MemberDrawerDAO
 				"ORDER BY b.name";
 
 			ps = argCon.prepareStatement(sql);
+
+			ps.setString(1,argMbrSk);
 
 			rs = ps.executeQuery();
 

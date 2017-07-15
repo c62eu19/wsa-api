@@ -31,7 +31,7 @@ public class MemberTrayDAO
 
 			ps = argCon.prepareStatement(sql);
 
-			ps.setString(1,  argMbrSk);
+			ps.setString(1,argMbrSk);
 
 			rs = ps.executeQuery();
 

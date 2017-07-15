@@ -106,7 +106,8 @@ public class ImageEntryWS extends HttpServlet
 				text,
 				url);
 
-			String jsonResponse = mds.getMemberDrawerList(request);
+			String jsonResponse = 
+				mds.getMemberDrawerList(request, mbrSk);
 
 			out.println(jsonResponse);
 			out.flush();

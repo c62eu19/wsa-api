@@ -20,6 +20,7 @@ import com.mydrawer.bean.Member;
 import com.mydrawer.model.MemberDAO;
 import com.mydrawer.service.MemberDrawerService;
 import com.mydrawer.service.MemberService;
+import com.mydrawer.service.MemberTrayService;
 
 @WebServlet(name = "signinws",urlPatterns = {"/signinws/*"})
 public class SignInWS extends HttpServlet
@@ -61,6 +62,9 @@ public class SignInWS extends HttpServlet
 
 			String mbrSk = member.getMbrSk();
 
+			String mbrTrayJson = "";
+			String mbrDrawerJson = "";
+
 			// Based on a successful sign in, get the member content
 			if(Integer.parseInt(mbrSk) > 0)
 			{
@@ -70,9 +74,15 @@ public class SignInWS extends HttpServlet
 				}
 				else
 				{
-					MemberDrawerService mds = new MemberDrawerService();
+					MemberTrayService mts = 
+						new MemberTrayService();
 
-					jsonResponse = mds.getMemberDrawerList(request);
+					mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
+
+					MemberDrawerService mds = 
+						new MemberDrawerService();
+
+					mbrDrawerJson = mds.getMemberDrawerList(request, mbrSk);
 				}
 			}
 			else
@@ -90,7 +100,9 @@ public class SignInWS extends HttpServlet
 			hm.put("statusCd","0");
 			hm.put("statusMsg","");
 			hm.put("mbrSkToken",mbrSkToken);
-			hm.put("name",member.getName());
+			hm.put("mbrName",member.getName());
+			hm.put("mbrTrayJson", mbrTrayJson);
+			hm.put("mbrDrawerJson", mbrDrawerJson);
 
 			// Convert the hashmap to a JSON string
 			JSONObject joPayload = new JSONObject(hm);

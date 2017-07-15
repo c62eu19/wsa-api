@@ -13,12 +13,13 @@ import org.json.JSONObject;
 
 import com.mydrawer.bean.MemberDrawer;
 import com.mydrawer.model.MemberDrawerDAO;
-import com.mydrawer.utility.URLUtility;
 
 public class MemberDrawerService
 {
-	public String getMemberDrawerList(HttpServletRequest request)
-		throws SQLException 
+	public String getMemberDrawerList(
+		HttpServletRequest request,
+		String argMbrSk)
+			throws SQLException 
 	{
 		Connection con = null;
 
@@ -37,11 +38,11 @@ public class MemberDrawerService
 
 			// Get the content to display
 			ArrayList list = 
-				cDAO.selectMemberDrawerList(con);
+				cDAO.selectMemberDrawerList(con, argMbrSk);
 
 			if(con != null) con.close();
 
-			HashMap hmItemRows = new HashMap();
+			ArrayList hmList = new ArrayList();
 
 			for(int i=0; i<list.size(); i++)
 			{
@@ -68,11 +69,11 @@ public class MemberDrawerService
 				hmItems.put("text", text);
 				hmItems.put("url", url);
 
-				hmItemRows.put(Integer.toString(i), hmItems);
+				hmList.add(hmItems);
 			}
 
 			// Convert the hashmap to a JSON string
-			JSONObject joPayload = new JSONObject(hmItemRows);
+			JSONObject joPayload = new JSONObject(hmList);
 			listJson = joPayload.toString();
 		}
 		catch(Exception e)
