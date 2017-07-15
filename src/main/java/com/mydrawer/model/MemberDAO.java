@@ -437,8 +437,8 @@ public class MemberDAO
 		Connection argCon, 
 		String argMbrSk,
 		String argEmail,
-		String argPassword,
 		String argName,
+		String argPassword,
 		String argPin) 
 			throws SQLException
 	{
@@ -467,7 +467,7 @@ public class MemberDAO
 				  "?, " + 
 				  "CURRENT_TIMESTAMP, " + 
 				  "CURRENT_TIMESTAMP, " +
-				  "'0', " + 
+				  "'1', " + 
 				  "'A')";
 
 			ps = argCon.prepareStatement(sql);

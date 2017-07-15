@@ -78,8 +78,8 @@ public class SignUpWS extends HttpServlet
 						this.addNewMember(
 							request, 
 							email, 
-							encryptedPword, 
 							name,
+							encryptedPword, 
 							encryptedPin);
 
 					if(Integer.parseInt(mbrSk) > 0)
@@ -216,8 +216,8 @@ public class SignUpWS extends HttpServlet
 	private String addNewMember(
 		HttpServletRequest request,
 		String argEmail,
-		String argEncryptedPword,
 		String argName,
+		String argEncryptedPword,
 		String argEncryptedPin) 
 			throws SQLException 
 	{
