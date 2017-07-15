@@ -133,7 +133,7 @@ public class MemberTrayDAO
 				"(mbr_sk, " +
 				 "name) " +
 				"VALUES " + 
-				 "CAST(? AS integer), " +
+				"(CAST(? AS integer), " +
 				 "?)";
 
 			ps = argCon.prepareStatement(sql);

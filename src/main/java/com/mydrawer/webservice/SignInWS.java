@@ -82,6 +82,9 @@ public class SignInWS extends HttpServlet
 			// Encrypt the mbrSk
 			String mbrSkToken = ms.encryptMbrSk(email, mbrSk);
 
+			// TODO: Get the mmeber's drawer
+
+
 			HashMap hm = new HashMap();
 
 			hm.put("statusCd","0");
