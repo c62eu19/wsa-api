@@ -9,6 +9,7 @@ import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mydrawer.bean.MemberTray;
@@ -61,7 +62,7 @@ public class MemberTrayService
 			}
 
 			// Convert the hashmap to a JSON string
-			JSONObject joPayload = new JSONObject(hmList);
+			JSONArray joPayload = new JSONArray(hmList);
 			listJson = joPayload.toString();
 		}
 		catch(Exception e)
