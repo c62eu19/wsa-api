@@ -177,8 +177,8 @@ public class MemberTrayDAO
 			ps = argCon.prepareStatement(sql);
 
 			// Set the parms
-			ps.setString(1, argTraSk);
-			ps.setString(2, argName);
+			ps.setString(1, argName);
+			ps.setString(2, argTraSk);
 
 			ps.executeUpdate();
 		} 
