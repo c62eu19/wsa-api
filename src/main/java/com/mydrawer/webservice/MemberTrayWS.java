@@ -48,6 +48,9 @@ public class MemberTrayWS extends HttpServlet
 			String mbrTrayJson = 
 				mts.getMemberTrayList(request, mbrSk);
 
+System.out.println(mbrSk);
+System.out.println(mbrTrayJson);
+
 			out.println(mbrTrayJson);
 			out.flush();
 		}
