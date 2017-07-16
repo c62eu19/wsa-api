@@ -86,31 +86,18 @@ public class Security
 	{
 		Security ee = new Security();
 
-		String valueEmail = "lifelink!";
-		String valuePassword = "thehealthshare!";
+		String email = "c62eu19@gmail.com";
+		String mbrSk = "2";
 
 		// Salt the password before encrypting
-		String saltedPword = valueEmail.trim() + "^^" + valuePassword.trim();
-		String encryptedPword = Security.encrypt(saltedPword);
+		String saltedValue = email.trim() + ee.getSalt() + mbrSk.trim();
+		String encryptedValue = ee.encrypt(saltedValue);
 
-		System.out.println(valueEmail + " - " + encryptedPword);
+		System.out.println(email + " - " + mbrSk);
 
-		String valueEnc = "";
-		String valueDec = "";
+		String decryptedValue = ee.decrypt(encryptedValue);
 
-		valueEnc = encrypt(valueEmail);
-		valueDec = decrypt(valueEnc);
-
-		System.out.println("Email: " + valueEmail);
-		System.out.println("Encrypted Text : " + valueEnc);
-		System.out.println("Decrypted Text : " + valueDec);
-
-		valueEnc = encrypt(valuePassword);
-		valueDec = decrypt(valueEnc);
-
-		System.out.println("Password: " + valuePassword);
-		System.out.println("Encrypted Text : " + valueEnc);
-		System.out.println("Decrypted Text : " + valueDec);
+		System.out.println("Decrypted Text : " + decryptedValue);
 
 	}
 
