@@ -93,19 +93,12 @@ public class MemberService
 		{
 			String decryptedMbrSk = Security.decrypt(argEncryptedMbrSk);
 
-System.out.println(argEncryptedMbrSk);
-System.out.println(decryptedMbrSk);
-
 			// Parse out the mbrSk from decrypted token
-			String[] mbrSkTokens = decryptedMbrSk.split("|");
+			String[] mbrSkTokens = decryptedMbrSk.split("[|]");
 			String email = mbrSkTokens[0];
 			String salt = mbrSkTokens[1];
 			
 			mbrSk = mbrSkTokens[2];
-
-System.out.println(email);
-System.out.println(salt);
-System.out.println(mbrSk);
 		}
 		catch(Exception ex)
 		{

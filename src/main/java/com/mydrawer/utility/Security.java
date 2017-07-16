@@ -93,11 +93,17 @@ public class Security
 		String saltedValue = email.trim() + ee.getSalt() + mbrSk.trim();
 		String encryptedValue = ee.encrypt(saltedValue);
 
-		System.out.println(email + " - " + mbrSk);
+		System.out.println(encryptedValue);
 
 		String decryptedValue = ee.decrypt(encryptedValue);
 
 		System.out.println("Decrypted Text : " + decryptedValue);
+
+		String[] mbrSkTokens = decryptedValue.split("[|]");
+		
+System.out.println(mbrSkTokens[0]);
+System.out.println(mbrSkTokens[1]);
+System.out.println(mbrSkTokens[2]);
 
 	}
 
