@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import com.mydrawer.service.MemberDrawerService;
 import com.mydrawer.utility.Security;
 
-@WebServlet(name = "memberdrawerws",urlPatterns = {"/memberdrawerws/*"})
-public class MemberDrawerWS extends HttpServlet
+@WebServlet(name = "memberdrawerentryws",urlPatterns = {"/memberdrawerentryws/*"})
+public class MemberDrawerEntryWS extends HttpServlet
 {
 	private static final long serialVersionUID = 2857847752169838915L;
 

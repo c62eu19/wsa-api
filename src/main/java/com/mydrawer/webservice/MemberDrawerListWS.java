@@ -13,12 +13,49 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import com.mydrawer.service.MemberDrawerService;
+import com.mydrawer.service.MemberService;
 
-@WebServlet(name = "itemlistws",urlPatterns = {"/itemlistws/*"})
+@WebServlet(name = "memberdrawerlistws",urlPatterns = {"/memberdrawerlistws/*"})
 
-public class DrawerListWS extends HttpServlet
+public class MemberDrawerListWS extends HttpServlet
 {
 	private static final long serialVersionUID = 2857847752169838915L;
+
+	protected void doGet(
+		HttpServletRequest request, 
+		HttpServletResponse response) 
+			throws ServletException, IOException
+	{
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+
+		try
+		{
+			String mbrSkToken = request.getPathInfo();
+
+			// Exclude the beginning / of the query param
+			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length());
+
+			MemberService ms = new MemberService();
+
+			// Decrypt mbrSk encrypted token
+			String mbrSk = ms.decryptMbrSk(newMbrSkToken);
+
+			MemberDrawerService mts = new MemberDrawerService();
+
+			String mbrDrawerJson = 
+				mts.getMemberDrawerList(request, mbrSk);
+
+			out.println(mbrDrawerJson);
+			out.flush();
+		}
+		catch(Exception e)
+		{
+			System.out.println(
+				"EXCEPTION: " + this.getClass().getName() + ".doGet(): " + e);
+		}
+	}
 
 	protected void doPost(
 		HttpServletRequest request, 
@@ -51,11 +88,4 @@ public class DrawerListWS extends HttpServlet
 		}
 	}
 
-	protected void doGet(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
-		doGet(request, response);
-	}
 }
