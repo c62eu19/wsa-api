@@ -15,13 +15,13 @@ public class Security
 //        new byte[] {'T', 'h', 'e', 'B', 'e', 's', 't','S', 'e', 'c', 'r','e', 't', 'K', 'e', 'y'};
 		new byte[] {'M', 'a', 'r', 'm', 'a', 'l', 'a','d', 'e', 'S', 'k','i', 'e', 's', 'J', 'L'};
 
-	public static String getSalt() 
+	public String getSalt() 
 	{
 		// Note: The leading and trailing pipes for parsing the actual value from the salt if needed
 		return "|^~s$&-e-&$z~^|";
 	}
 
-	public static String encrypt(String Data) 
+	public String encrypt(String Data) 
 		throws Exception
 	{
 		String encryptedValue = "";
@@ -43,7 +43,7 @@ public class Security
 		return encryptedValue;
 	}
 
-	public static String decrypt(String encryptedData) 
+	public String decrypt(String encryptedData) 
 		throws Exception
 	{
 		String decryptedValue = "";
@@ -66,7 +66,7 @@ public class Security
 		return decryptedValue;
 	}
 
-	private static Key generateKey() throws Exception
+	private Key generateKey() throws Exception
 	{
 		Key key = null;
 

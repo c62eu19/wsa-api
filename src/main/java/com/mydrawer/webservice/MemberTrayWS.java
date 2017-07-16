@@ -75,8 +75,10 @@ public class MemberTrayWS extends HttpServlet
 			String mbrSkToken = jo.get("mbrSkToken").toString();
 			String name = jo.getString("name").toString();
 
+			Security s = new Security();
+
 			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = Security.decrypt(mbrSkToken);
+			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
 			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
 
 			MemberTrayService mts = new MemberTrayService();
@@ -115,8 +117,10 @@ public class MemberTrayWS extends HttpServlet
 			String traSk = jo.get("traSk").toString();
 			String name = jo.getString("name").toString();
 
+			Security s = new Security();
+
 			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = Security.decrypt(mbrSkToken);
+			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
 			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
 
 			MemberTrayService mts = new MemberTrayService();
@@ -154,8 +158,10 @@ public class MemberTrayWS extends HttpServlet
 			String mbrSkToken = jo.get("mbrSkToken").toString();
 			String traSk = jo.get("traSk").toString();
 
+			Security s = new Security();
+
 			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = Security.decrypt(mbrSkToken);
+			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
 			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
 
 			MemberTrayService mts = new MemberTrayService();

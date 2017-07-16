@@ -21,9 +21,11 @@ public class MemberService
 
 		try
 		{
+			Security s = new Security();
+
 			// Salt the password before encrypting
-			String saltedPword = argEmail.trim() + Security.getSalt() + argPassword.trim();
-			encryptedPword = Security.encrypt(saltedPword);
+			String saltedPword = argEmail.trim() + s.getSalt() + argPassword.trim();
+			encryptedPword = s.encrypt(saltedPword);
 		}
 		catch(Exception ex)
 		{
@@ -45,9 +47,11 @@ public class MemberService
 
 		try
 		{
+			Security s = new Security();
+
 			// Salt the pin before encrypting
-			String saltedPin = argEmail.trim() + Security.getSalt() + argPin.trim();
-			encryptedPin = Security.encrypt(saltedPin);
+			String saltedPin = argEmail.trim() + s.getSalt() + argPin.trim();
+			encryptedPin = s.encrypt(saltedPin);
 		}
 		catch(Exception ex)
 		{
@@ -69,9 +73,11 @@ public class MemberService
 
 		try
 		{
+			Security s = new Security();
+
 			// Salt the mbrSk before encrypting
-			String saltedMbrSk = argEmail.trim() + Security.getSalt() + argMbrSk.trim();
-			encryptedMbrSk = Security.encrypt(saltedMbrSk);
+			String saltedMbrSk = argEmail.trim() + s.getSalt() + argMbrSk.trim();
+			encryptedMbrSk = s.encrypt(saltedMbrSk);
 		}
 		catch(Exception ex)
 		{
@@ -91,7 +97,12 @@ public class MemberService
 
 		try
 		{
-			String decryptedMbrSk = Security.decrypt(argEncryptedMbrSk);
+			Security s = new Security();
+
+			String decryptedMbrSk = s.decrypt(argEncryptedMbrSk);
+
+System.out.println(argEncryptedMbrSk);
+System.out.println(decryptedMbrSk);
 
 			// Parse out the mbrSk from decrypted token
 			String[] mbrSkTokens = decryptedMbrSk.split("[|]");
