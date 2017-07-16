@@ -64,10 +64,8 @@ public class MemberService
 		return encryptedPin;
 	}
 
-	public String encryptMbrSk(
-		String argEmail,
-		String argMbrSk) 
-			throws Exception 
+	public String encryptMbrSk(String argMbrSk) 
+		throws Exception 
 	{
 		String encryptedMbrSk = "";
 
@@ -76,8 +74,7 @@ public class MemberService
 			Security s = new Security();
 
 			// Salt the mbrSk before encrypting
-			String saltedMbrSk = argEmail.trim() + s.getSalt() + argMbrSk.trim();
-			encryptedMbrSk = s.encrypt(saltedMbrSk);
+			encryptedMbrSk = s.encrypt(argMbrSk.trim());
 		}
 		catch(Exception ex)
 		{
@@ -99,17 +96,7 @@ public class MemberService
 		{
 			Security s = new Security();
 
-			String decryptedMbrSk = s.decrypt(argEncryptedMbrSk);
-
-System.out.println(argEncryptedMbrSk);
-System.out.println(decryptedMbrSk);
-
-			// Parse out the mbrSk from decrypted token
-			String[] mbrSkTokens = decryptedMbrSk.split("[|]");
-			String email = mbrSkTokens[0];
-			String salt = mbrSkTokens[1];
-			
-			mbrSk = mbrSkTokens[2];
+			mbrSk = s.decrypt(argEncryptedMbrSk);
 		}
 		catch(Exception ex)
 		{

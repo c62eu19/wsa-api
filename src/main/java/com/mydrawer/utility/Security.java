@@ -90,7 +90,8 @@ public class Security
 		String mbrSk = "2";
 
 		// Salt the password before encrypting
-		String saltedValue = email.trim() + ee.getSalt() + mbrSk.trim();
+//		String saltedValue = email.trim() + ee.getSalt() + mbrSk.trim();
+		String saltedValue = mbrSk.trim();
 		String encryptedValue = ee.encrypt(saltedValue);
 
 		System.out.println(encryptedValue);

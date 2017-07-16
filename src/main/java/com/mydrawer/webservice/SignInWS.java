@@ -90,7 +90,7 @@ public class SignInWS extends HttpServlet
 			}
 
 			// Encrypt the mbrSk
-			String mbrSkToken = ms.encryptMbrSk(email, mbrSk);
+			String mbrSkToken = ms.encryptMbrSk(mbrSk);
 
 			// TODO: Get the mmeber's drawer
 

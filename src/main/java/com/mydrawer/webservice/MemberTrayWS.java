@@ -36,7 +36,7 @@ public class MemberTrayWS extends HttpServlet
 			String mbrSkToken = request.getPathInfo();
 
 			// Exclude the beginning / of the query param
-			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length() - 1);
+			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length());
 
 			MemberService ms = new MemberService();
 

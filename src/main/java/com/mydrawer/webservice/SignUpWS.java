@@ -91,7 +91,7 @@ public class SignUpWS extends HttpServlet
 						mts.addMemberTray(request, mbrSk, "Default");
 
 						// Encrypt the mbrSk
-						String mbrSkToken = ms.encryptMbrSk(email, mbrSk);
+						String mbrSkToken = ms.encryptMbrSk(mbrSk);
 
 						hm.put("statusCd","0");
 						hm.put("statusMsg","");
