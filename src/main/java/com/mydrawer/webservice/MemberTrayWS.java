@@ -48,9 +48,6 @@ public class MemberTrayWS extends HttpServlet
 			String mbrTrayJson = 
 				mts.getMemberTrayList(request, mbrSk);
 
-System.out.println(mbrSk);
-System.out.println(mbrTrayJson);
-
 			out.println(mbrTrayJson);
 			out.flush();
 		}
@@ -83,16 +80,17 @@ System.out.println(mbrTrayJson);
 
 			Security s = new Security();
 
-			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
-			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
+			// Decrypt the mbrSkToken
+			String mbrSk = s.decrypt(mbrSkToken);
 
 			MemberTrayService mts = new MemberTrayService();
 
-			String jsonResponse = 
+			mts.addMemberTray(request, mbrSk, name);
+
+			String mbrTrayJson = 
 				mts.getMemberTrayList(request, mbrSk);
 
-			out.println(jsonResponse);
+			out.println(mbrTrayJson);
 			out.flush();
 		}
 		catch(Exception e)
@@ -125,16 +123,17 @@ System.out.println(mbrTrayJson);
 
 			Security s = new Security();
 
-			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
-			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
+			// Decrypt the mbrSkToken
+			String mbrSk = s.decrypt(mbrSkToken);
 
 			MemberTrayService mts = new MemberTrayService();
 
-			String jsonResponse = 
+			mts.updateMemberTray(request, traSk, name);
+
+			String mbrTrayJson = 
 				mts.getMemberTrayList(request, mbrSk);
 
-			out.println(jsonResponse);
+			out.println(mbrTrayJson);
 			out.flush();
 		}
 		catch(Exception e)

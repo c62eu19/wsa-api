@@ -57,7 +57,7 @@ public class FileUtility
 			String line = "";
 			while((line = br.readLine()) != null)
 			{
-				output += line;
+				output += line.trim();
 			}
 		}
 		catch(Exception e)
