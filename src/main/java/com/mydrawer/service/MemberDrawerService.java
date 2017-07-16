@@ -115,6 +115,17 @@ public class MemberDrawerService
 				title = argTitle;
 			}
 
+			String text = "";
+
+			if(argText.length() > 100)
+			{
+				text = argText.substring(0, 95) + "...";
+			}
+			else
+			{
+				text = argText;
+			}
+
 			// Insert into the Content Db
 			Context initialContext = new InitialContext();
 			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
@@ -133,7 +144,7 @@ public class MemberDrawerService
 					argTraSk,
 					argTypeId,
 					title,
-					argText,
+					text,
 					argUrl);
 
 			con.commit();

@@ -118,7 +118,6 @@ public class MemberTrayWS extends HttpServlet
 	        br = new BufferedReader(isr);
 
 	        String inputJSON = br.readLine();
-System.out.println(inputJSON);
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
@@ -171,7 +170,6 @@ System.out.println(inputJSON);
 	        br = new BufferedReader(isr);
 
 	        String inputJSON = br.readLine();
-System.out.println(inputJSON);
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
