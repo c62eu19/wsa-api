@@ -112,6 +112,7 @@ public class MemberTrayWS extends HttpServlet
 		try
 		{
 			String inputJSON = request.getParameter("inputJSON");
+System.out.println(inputJSON);
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
