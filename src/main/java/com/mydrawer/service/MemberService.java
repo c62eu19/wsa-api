@@ -91,7 +91,7 @@ public class MemberService
 
 		try
 		{
-			String decryptedMbrSk = Security.encrypt(argEncryptedMbrSk);
+			String decryptedMbrSk = Security.decrypt(argEncryptedMbrSk);
 
 			// Parse out the mbrSk from decrypted token
 			String[] mbrSkTokens = decryptedMbrSk.split("|");
