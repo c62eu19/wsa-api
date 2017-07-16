@@ -58,6 +58,7 @@ public class MemberDrawerService
 				String title = md.getTitle();
 				String text = md.getText();
 				String url = md.getUrl();
+				String traName = md.getTraName();
 
 				HashMap hm = new HashMap();
 				hm.put("drwSk", drwSk);
@@ -69,6 +70,7 @@ public class MemberDrawerService
 				hm.put("title", title);
 				hm.put("text", text);
 				hm.put("url", url);
+				hm.put("traName", traName);
 
 				hmList.add(hm);
 			}
