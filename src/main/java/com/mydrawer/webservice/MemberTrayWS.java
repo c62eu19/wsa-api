@@ -35,10 +35,13 @@ public class MemberTrayWS extends HttpServlet
 		{
 			String mbrSkToken = request.getPathInfo();
 
+			// Exclude the beginning / of the query param
+			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length() - 1);
+
 			MemberService ms = new MemberService();
 
 			// Decrypt mbrSk encrypted token
-			String mbrSk = ms.decryptMbrSk(mbrSkToken);
+			String mbrSk = ms.decryptMbrSk(newMbrSkToken);
 
 			MemberTrayService mts = new MemberTrayService();
 
