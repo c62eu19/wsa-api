@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.mydrawer.service.MemberService;
 import com.mydrawer.service.MemberTrayService;
 import com.mydrawer.utility.Security;
 
@@ -34,15 +35,17 @@ public class MemberTrayWS extends HttpServlet
 		{
 			String mbrSkToken = request.getRequestURI();
 
+			MemberService ms = new MemberService();
+
 			// Decrypt mbrSk encrypted token
-			String mbrSk = "";
+			String mbrSk = ms.decryptMbrSk(mbrSkToken);
 
 			MemberTrayService mts = new MemberTrayService();
 
-			String jsonResponse = 
+			String mbrTrayJson = 
 				mts.getMemberTrayList(request, mbrSk);
 
-			out.println(jsonResponse);
+			out.println(mbrTrayJson);
 			out.flush();
 		}
 		catch(Exception e)

@@ -77,8 +77,6 @@ public class SignInWS extends HttpServlet
 					MemberTrayService mts = 
 						new MemberTrayService();
 
-System.out.println(mbrSk);
-
 					mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
 
 					MemberDrawerService mds = 
