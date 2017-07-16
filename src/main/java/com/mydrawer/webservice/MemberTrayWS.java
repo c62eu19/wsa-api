@@ -33,7 +33,7 @@ public class MemberTrayWS extends HttpServlet
 
 		try
 		{
-			String mbrSkToken = request.getRequestURI();
+			String mbrSkToken = request.getPathInfo();
 
 			MemberService ms = new MemberService();
 
