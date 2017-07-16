@@ -69,10 +69,14 @@ public class MemberTrayWS extends HttpServlet
 
 		try
 		{
-			String inputJSON = request.getParameter("inputJSON");
+			String inputJSON = request.getPathInfo();
+System.out.println(inputJSON);
+
+			// Exclude the beginning / of the query param
+			String newInputJSON = inputJSON.substring(1, inputJSON.length());
 
 			JSONObject jo;
-			jo = new JSONObject(inputJSON);
+			jo = new JSONObject(newInputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
@@ -111,11 +115,14 @@ public class MemberTrayWS extends HttpServlet
 
 		try
 		{
-			String inputJSON = request.getParameter("inputJSON");
+			String inputJSON = request.getPathInfo();
 System.out.println(inputJSON);
 
+			// Exclude the beginning / of the query param
+			String newInputJSON = inputJSON.substring(1, inputJSON.length());
+
 			JSONObject jo;
-			jo = new JSONObject(inputJSON);
+			jo = new JSONObject(newInputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
@@ -155,10 +162,14 @@ System.out.println(inputJSON);
 
 		try
 		{
-			String inputJSON = request.getParameter("inputJSON");
+			String inputJSON = request.getPathInfo();
+System.out.println(inputJSON);
+
+			// Exclude the beginning / of the query param
+			String newInputJSON = inputJSON.substring(1, inputJSON.length());
 
 			JSONObject jo;
-			jo = new JSONObject(inputJSON);
+			jo = new JSONObject(newInputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
