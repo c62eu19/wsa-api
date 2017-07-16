@@ -87,12 +87,10 @@ public class MemberTrayWS extends HttpServlet
 
 			MemberTrayService mts = new MemberTrayService();
 
-			mts.addMemberTray(request, mbrSk, name);
+			int statusCd = 
+				mts.addMemberTray(request, mbrSk, name);
 
-			String mbrTrayJson = 
-				mts.getMemberTrayList(request, mbrSk);
-
-			out.println(mbrTrayJson);
+			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e)
@@ -119,11 +117,8 @@ public class MemberTrayWS extends HttpServlet
 			isr = new InputStreamReader(request.getInputStream());
 	        br = new BufferedReader(isr);
 
-	        String data = br.readLine();
-System.out.println(data);
-
-			// Exclude the beginning / of the query param
-			String inputJSON = data.substring(1, data.length());
+	        String inputJSON = br.readLine();
+System.out.println(inputJSON);
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
@@ -140,12 +135,10 @@ System.out.println(data);
 
 			MemberTrayService mts = new MemberTrayService();
 
-			mts.updateMemberTray(request, traSk, name);
+			int statusCd = 
+				mts.updateMemberTray(request, traSk, name);
 
-			String mbrTrayJson = 
-				mts.getMemberTrayList(request, mbrSk);
-
-			out.println(mbrTrayJson);
+			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e)
@@ -167,18 +160,21 @@ System.out.println(data);
 	{
 		response.setContentType("application/json");
 
+		BufferedReader br = null;
+		InputStreamReader isr = null;
+
 		PrintWriter out = response.getWriter();
 
 		try
 		{
-			String inputJSON = request.getPathInfo();
+			isr = new InputStreamReader(request.getInputStream());
+	        br = new BufferedReader(isr);
+
+	        String inputJSON = br.readLine();
 System.out.println(inputJSON);
 
-			// Exclude the beginning / of the query param
-			String newInputJSON = inputJSON.substring(1, inputJSON.length());
-
 			JSONObject jo;
-			jo = new JSONObject(newInputJSON);
+			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
@@ -192,17 +188,21 @@ System.out.println(inputJSON);
 
 			MemberTrayService mts = new MemberTrayService();
 
+			int statusCd = 
+				mts.deleteMemberTray(request, traSk);
 
-			String jsonResponse = 
-				mts.getMemberTrayList(request, mbrSk);
-
-			out.println(jsonResponse);
+			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e)
 		{
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doDelete(): " + e);
+		}
+		finally
+		{
+			if(isr != null) isr.close();
+			if(br != null) br.close();
 		}
 	}
 
