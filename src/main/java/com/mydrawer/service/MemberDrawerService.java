@@ -225,4 +225,45 @@ public class MemberDrawerService
 		return statusCd;
 	}
 
+	public int deleteMemberDrawer(
+		HttpServletRequest request,
+		String argDwrSk)
+			throws SQLException 
+	{
+		Connection con = null;
+
+		int statusCd = 0;
+
+		try
+		{
+			// Insert into the Content Db
+			Context initialContext = new InitialContext();
+			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
+			con =  ds.getConnection();
+
+			con.setAutoCommit(false);
+
+			MemberDrawerDAO cDAO = new MemberDrawerDAO();
+
+			con.commit();
+
+			statusCd = 
+				cDAO.deleteMemberDrawer(con, argDwrSk);
+
+			con.commit();
+
+			if(con != null) con.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".deleteMemberDrawer(): " + e);
+		}
+		finally
+		{
+			if(con != null) con.close();
+		}
+
+		return statusCd;
+	}
+
 }

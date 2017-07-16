@@ -195,7 +195,7 @@ public class MemberDrawerDAO
 				 "(CAST(? AS integer), " +
 				 "CURRENT_TIMESTAMP, " + 
 				 "CURRENT_TIMESTAMP, " +
-				 "?, " +
+				 "(CAST(? AS integer), " +
 				 "?, " +
 				 "?, " +
 				 "?)";
@@ -253,9 +253,9 @@ public class MemberDrawerDAO
 			// Set the parms
 			ps.setString(1, argTraSk);
 			ps.setString(2, argTitle);
-			ps.setString(2, argText);
-			ps.setString(2, argUrl);
-			ps.setString(2, argDrwSk);
+			ps.setString(3, argText);
+			ps.setString(4, argUrl);
+			ps.setString(5, argDrwSk);
 
 			ps.executeUpdate();
 		} 
