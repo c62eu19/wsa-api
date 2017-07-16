@@ -9,6 +9,7 @@ import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mydrawer.bean.MemberDrawer;
@@ -58,22 +59,22 @@ public class MemberDrawerService
 				String text = md.getText();
 				String url = md.getUrl();
 
-				HashMap hmItems = new HashMap();
-				hmItems.put("drwSk", drwSk);
-				hmItems.put("mbrSk", mbrSk);
-				hmItems.put("traSk", traSk);
-				hmItems.put("typeId", typeId);
-				hmItems.put("insertedDt", insertedDt);
-				hmItems.put("updatedDt", updatedDt);
-				hmItems.put("title", title);
-				hmItems.put("text", text);
-				hmItems.put("url", url);
+				HashMap hm = new HashMap();
+				hm.put("drwSk", drwSk);
+				hm.put("mbrSk", mbrSk);
+				hm.put("traSk", traSk);
+				hm.put("typeId", typeId);
+				hm.put("insertedDt", insertedDt);
+				hm.put("updatedDt", updatedDt);
+				hm.put("title", title);
+				hm.put("text", text);
+				hm.put("url", url);
 
-				hmList.add(hmItems);
+				hmList.add(hm);
 			}
 
 			// Convert the hashmap to a JSON string
-			JSONObject joPayload = new JSONObject(hmList);
+			JSONArray joPayload = new JSONArray(hmList);
 			listJson = joPayload.toString();
 		}
 		catch(Exception e)

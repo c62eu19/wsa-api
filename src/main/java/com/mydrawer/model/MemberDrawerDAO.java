@@ -191,7 +191,7 @@ public class MemberDrawerDAO
 				 "text, " +
 				 "url) " +
 				"VALUES " + 
-				 "CAST(? AS integer), " +
+				"(CAST(? AS integer), " +
 				 "CAST(? AS integer), " +
 				 "CURRENT_TIMESTAMP, " + 
 				 "CURRENT_TIMESTAMP, " +
