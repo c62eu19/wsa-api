@@ -1,6 +1,8 @@
 package com.mydrawer.webservice;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
@@ -69,14 +71,10 @@ public class MemberTrayWS extends HttpServlet
 
 		try
 		{
-			String inputJSON = request.getPathInfo();
-System.out.println(inputJSON);
-
-			// Exclude the beginning / of the query param
-			String newInputJSON = inputJSON.substring(1, inputJSON.length());
+			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
-			jo = new JSONObject(newInputJSON);
+			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
@@ -111,18 +109,24 @@ System.out.println(inputJSON);
 	{
 		response.setContentType("application/json");
 
+		BufferedReader br = null;
+		InputStreamReader isr = null;
+
 		PrintWriter out = response.getWriter();
 
 		try
 		{
-			String inputJSON = request.getPathInfo();
-System.out.println(inputJSON);
+			isr = new InputStreamReader(request.getInputStream());
+	        br = new BufferedReader(isr);
+
+	        String data = br.readLine();
+System.out.println(data);
 
 			// Exclude the beginning / of the query param
-			String newInputJSON = inputJSON.substring(1, inputJSON.length());
+			String inputJSON = data.substring(1, data.length());
 
 			JSONObject jo;
-			jo = new JSONObject(newInputJSON);
+			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
 			String mbrSkToken = jo.get("mbrSkToken").toString();
@@ -148,6 +152,11 @@ System.out.println(inputJSON);
 		{
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doPut(): " + e);
+		}
+		finally
+		{
+			if(isr != null) isr.close();
+			if(br != null) br.close();
 		}
 	}
 
