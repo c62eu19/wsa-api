@@ -230,7 +230,7 @@ public class MemberDrawerService
 
 	public int deleteMemberDrawer(
 		HttpServletRequest request,
-		String argDwrSk)
+		String argDrwSk)
 			throws SQLException 
 	{
 		Connection con = null;
@@ -251,7 +251,7 @@ public class MemberDrawerService
 			con.commit();
 
 			statusCd = 
-				cDAO.deleteMemberDrawer(con, argDwrSk);
+				cDAO.deleteMemberDrawer(con, argDrwSk);
 
 			con.commit();
 
