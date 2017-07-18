@@ -115,6 +115,8 @@ public class MemberDrawerEntryWS extends HttpServlet
 			// Add the new post
 			MemberDrawerService mds = new MemberDrawerService();
 
+			System.out.println(drwSk + "-" + traSk);
+
 			int statusCd = 
 				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
 

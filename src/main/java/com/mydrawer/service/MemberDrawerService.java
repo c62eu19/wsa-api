@@ -168,7 +168,7 @@ public class MemberDrawerService
 
 	public int updateMemberDrawer(
 		HttpServletRequest request,
-		String argDwrSk,
+		String argDrwSk,
 		String argTraSk,
 		String argTitle,
 		String argText,
@@ -203,10 +203,12 @@ public class MemberDrawerService
 
 			con.commit();
 
+			System.out.println(argDrwSk + "-" + argTraSk);
+
 			statusCd = 
 				cDAO.updateMemberDrawer(
 					con, 
-					argDwrSk,
+					argDrwSk,
 					argTraSk,
 					title,
 					argText,

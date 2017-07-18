@@ -250,6 +250,8 @@ public class MemberDrawerDAO
 
 			ps = argCon.prepareStatement(sql);
 
+System.out.println(argDrwSk + "-" + argTraSk);
+
 			// Set the parms
 			ps.setString(1, argTraSk);
 			ps.setString(2, argTitle);
