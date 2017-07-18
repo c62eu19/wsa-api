@@ -60,6 +60,28 @@ public class MemberDrawerService
 				String url = md.getUrl();
 				String traName = md.getTraName();
 
+				String abbrTitle = "";
+
+				if(title.length() > 100)
+				{
+					abbrTitle = title.substring(0, 95) + "...";
+				}
+				else
+				{
+					abbrTitle = title;
+				}
+
+				String abbrText = "";
+
+				if(text.length() > 100)
+				{
+					abbrText = text.substring(0, 95) + "...";
+				}
+				else
+				{
+					abbrText = text;
+				}
+
 				HashMap hm = new HashMap();
 				hm.put("drwSk", drwSk);
 				hm.put("mbrSk", mbrSk);
@@ -67,8 +89,8 @@ public class MemberDrawerService
 				hm.put("typeId", typeId);
 				hm.put("insertedDt", insertedDt);
 				hm.put("updatedDt", updatedDt);
-				hm.put("title", title);
-				hm.put("text", text);
+				hm.put("title", abbrTitle);
+				hm.put("text", abbrText);
 				hm.put("url", url);
 				hm.put("traName", traName);
 
@@ -107,28 +129,6 @@ public class MemberDrawerService
 
 		try
 		{
-			String title = "";
-
-			if(argTitle.length() > 100)
-			{
-				title = argTitle.substring(0, 95) + "...";
-			}
-			else
-			{
-				title = argTitle;
-			}
-
-			String text = "";
-
-			if(argText.length() > 100)
-			{
-				text = argText.substring(0, 95) + "...";
-			}
-			else
-			{
-				text = argText;
-			}
-
 			// Insert into the Content Db
 			Context initialContext = new InitialContext();
 			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
@@ -146,8 +146,8 @@ public class MemberDrawerService
 					argMbrSk,
 					argTraSk,
 					argTypeId,
-					title,
-					text,
+					argTitle,
+					argText,
 					argUrl);
 
 			con.commit();
@@ -181,17 +181,6 @@ public class MemberDrawerService
 
 		try
 		{
-			String title = "";
-
-			if(argTitle.length() > 100)
-			{
-				title = argTitle.substring(0, 95) + "...";
-			}
-			else
-			{
-				title = argTitle;
-			}
-
 			// Insert into the Content Db
 			Context initialContext = new InitialContext();
 			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
@@ -210,7 +199,7 @@ public class MemberDrawerService
 					con, 
 					argDrwSk,
 					argTraSk,
-					title,
+					argTitle,
 					argText,
 					argUrl);
 

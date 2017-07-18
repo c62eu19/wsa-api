@@ -115,8 +115,6 @@ public class MemberDrawerEntryWS extends HttpServlet
 			// Add the new post
 			MemberDrawerService mds = new MemberDrawerService();
 
-			System.out.println(drwSk + "-" + traSk);
-
 			int statusCd = 
 				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
 
@@ -169,13 +167,10 @@ public class MemberDrawerEntryWS extends HttpServlet
 			// Decrypt and parse out the mbrSkToken
 			String mbrSk = s.decrypt(mbrSkToken);
 
-System.out.println(mbrSk + " - " + drwSk);
 			MemberDrawerService mds = new MemberDrawerService();
 
 			int statusCd = 
 				mds.deleteMemberDrawer(request, drwSk);
-
-System.out.println("statusCd: " + statusCd);
 
 			String mbrDrawerJson = 
 				mds.getMemberDrawerList(request, mbrSk);

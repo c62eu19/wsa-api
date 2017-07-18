@@ -62,7 +62,7 @@ public class MemberDrawerDAO
 
 				MemberDrawer md = new MemberDrawer();
 
-				md.setDrwSk(traSk);
+				md.setDrwSk(drwSk);
 				md.setMbrSk(mbrSk);
 				md.setTraSk(traSk);
 				md.setInsertedDt(insertedDt);
@@ -138,7 +138,7 @@ public class MemberDrawerDAO
 				String url = rs.getString("url");
 				String name = rs.getString("name");
 
-				md.setDrwSk(traSk);
+				md.setDrwSk(drwSk);
 				md.setMbrSk(mbrSk);
 				md.setTraSk(traSk);
 				md.setInsertedDt(insertedDt);
