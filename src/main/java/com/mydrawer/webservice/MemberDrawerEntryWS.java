@@ -101,30 +101,22 @@ public class MemberDrawerEntryWS extends HttpServlet
 
 			// Token that identifies a member
 			String mbrSkToken = jo.get("mbrSkToken").toString();
+			String drwSk = jo.get("drwSk").toString();
 			String traSk = jo.get("traSk").toString();
+			String url = jo.get("url").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
-			String url = jo.get("url").toString();
 
 			Security s = new Security();
 
 			// Decrypt the mbrSkToken
 			String mbrSk = s.decrypt(mbrSkToken);
 
-			// Web link
-			String typeId ="4";
-
 			// Add the new post
 			MemberDrawerService mds = new MemberDrawerService();
 
-			mds.addMemberDrawer(
-				request,
-				mbrSk,
-				traSk,
-				typeId,
-				title,
-				text,
-				url);
+			int statusCd = 
+				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
 
 			String mbrDrawerJson = 
 				mds.getMemberDrawerList(request, mbrSk);
