@@ -90,7 +90,8 @@ public class MemberDrawerService
 				hm.put("insertedDt", insertedDt);
 				hm.put("updatedDt", updatedDt);
 				hm.put("title", abbrTitle);
-				hm.put("text", abbrText);
+				hm.put("abbrText", abbrText);
+				hm.put("text", text);
 				hm.put("url", url);
 				hm.put("traName", traName);
 
