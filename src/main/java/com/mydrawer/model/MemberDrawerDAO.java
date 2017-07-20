@@ -7,15 +7,13 @@ import com.mydrawer.bean.*;
 
 public class MemberDrawerDAO 
 {
-	public ArrayList selectMemberDrawerList(
+	public ArrayList selectMemberDrawerListByMbrSk(
 		Connection argCon,
 		String argMbrSk)
 			throws SQLException
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
-		int rowCount = 0;
 
 		ArrayList list = new ArrayList();
 
@@ -44,21 +42,96 @@ public class MemberDrawerDAO
 
 			rs = ps.executeQuery();
 
-			// Process the resultset
-			while (rs.next())
-			{
-				rowCount++;
+			list = this.selectMemberDrawerList(rs);
+		}
+		catch(Exception ex)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByMbrSk(): " + ex);
+		}
+		finally
+		{
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();
+		}
 
-				String drwSk = rs.getString("drw_sk");
-				String mbrSk = rs.getString("mbr_sk");
-				String traSk = rs.getString("tra_sk");
-				String insertedDt = rs.getString("inserted_dt");
-				String updatedDt = rs.getString("updated_dt");
-				String typeId = rs.getString("type_id");
-				String title = rs.getString("title");
-				String text = rs.getString("text");
-				String url = rs.getString("url");
-				String name = rs.getString("name");
+		return list;
+	}
+
+	public ArrayList selectMemberDrawerListByWildcard(
+		Connection argCon,
+		String argMbrSk,
+		String argSearchTerm)
+			throws SQLException
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		ArrayList list = new ArrayList();
+
+		try
+		{
+			String searchTerm = "%" + argSearchTerm.toLowerCase() + "%";
+
+			String sql = 
+				"SELECT a.drw_sk, " +
+				 "a.mbr_sk, " + 
+				 "a.tra_sk, " + 
+				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
+				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
+				 "a.type_id, " + 
+				 "a.title, " + 
+				 "a.text, " + 
+				 "a.url, " +
+				 "b.name " +
+				"FROM member_drawer a, " +
+				 "member_tray b " +
+				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
+				 "(a.title ILIKE ?) AND " +
+				 "(a.tra_sk = b.tra_sk) " +
+				"ORDER BY a.drw_sk DESC, b.name ASC";
+
+			ps = argCon.prepareStatement(sql);
+
+			ps.setString(1,argMbrSk);
+			ps.setString(2,searchTerm);
+
+			rs = ps.executeQuery();
+
+			list = this.selectMemberDrawerList(rs);
+		}
+		catch(Exception ex)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByWildcard(): " + ex);
+		}
+		finally
+		{
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();
+		}
+
+		return list;
+	}
+
+	private ArrayList selectMemberDrawerList(ResultSet argRs)
+		throws SQLException
+	{
+		ArrayList list = new ArrayList();
+
+		try
+		{
+			// Process the resultset
+			while (argRs.next())
+			{
+				String drwSk = argRs.getString("drw_sk");
+				String mbrSk = argRs.getString("mbr_sk");
+				String traSk = argRs.getString("tra_sk");
+				String insertedDt = argRs.getString("inserted_dt");
+				String updatedDt = argRs.getString("updated_dt");
+				String typeId = argRs.getString("type_id");
+				String title = argRs.getString("title");
+				String text = argRs.getString("text");
+				String url = argRs.getString("url");
+				String name = argRs.getString("name");
 
 				MemberDrawer md = new MemberDrawer();
 
@@ -83,8 +156,6 @@ public class MemberDrawerDAO
 		}
 		finally
 		{
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
 		}
 
 		return list;

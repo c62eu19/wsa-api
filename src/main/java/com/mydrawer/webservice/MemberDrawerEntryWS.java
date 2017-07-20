@@ -64,7 +64,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 				url);
 
 			String mbrDrawerJson = 
-				mds.getMemberDrawerList(request, mbrSk);
+				mds.getMemberDrawerListByMbrSk(request, mbrSk);
 
 			out.println(mbrDrawerJson);
 			out.flush();
@@ -119,7 +119,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
 
 			String mbrDrawerJson = 
-				mds.getMemberDrawerList(request, mbrSk);
+				mds.getMemberDrawerListByMbrSk(request, mbrSk);
 
 			out.println(mbrDrawerJson);
 			out.flush();
@@ -173,7 +173,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 				mds.deleteMemberDrawer(request, drwSk);
 
 			String mbrDrawerJson = 
-				mds.getMemberDrawerList(request, mbrSk);
+				mds.getMemberDrawerListByMbrSk(request, mbrSk);
 
 			out.println(mbrDrawerJson);
 			out.flush();

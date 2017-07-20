@@ -45,7 +45,7 @@ public class MemberDrawerListWS extends HttpServlet
 			MemberDrawerService mts = new MemberDrawerService();
 
 			String mbrDrawerJson = 
-				mts.getMemberDrawerList(request, mbrSk);
+				mts.getMemberDrawerListByMbrSk(request, mbrSk);
 
 			out.println(mbrDrawerJson);
 			out.flush();
@@ -74,11 +74,30 @@ public class MemberDrawerListWS extends HttpServlet
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
+			String searchType = jo.get("searchType").toString();
+			String mbrSkToken = jo.get("mbrSkToken").toString();
+			String searchTerm = jo.getString("searchTerm").toString();
+
+			MemberService ms = new MemberService();
+
+			// Decrypt mbrSk encrypted token
+			String mbrSk = ms.decryptMbrSk(mbrSkToken);
+
 			MemberDrawerService mds = new MemberDrawerService();
 
-			String jsonResponse = mds.getMemberDrawerList(request,"mbrSk");
+			String mbrDrawerJson = "";
 
-			out.println(jsonResponse);
+			if(searchType.equalsIgnoreCase("WILDCARD"))
+			{
+				mbrDrawerJson = 
+					mds.getMemberDrawerListByWildcard(request, mbrSk, searchTerm);
+			}
+			else
+			{
+
+			}
+
+			out.println(mbrDrawerJson);
 			out.flush();
 		}
 		catch(Exception e)

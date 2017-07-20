@@ -82,7 +82,7 @@ public class SignInWS extends HttpServlet
 					MemberDrawerService mds = 
 						new MemberDrawerService();
 
-					mbrDrawerJson = mds.getMemberDrawerList(request, mbrSk);
+					mbrDrawerJson = mds.getMemberDrawerListByMbrSk(request, mbrSk);
 				}
 			}
 			else

@@ -17,7 +17,7 @@ import com.mydrawer.model.MemberDrawerDAO;
 
 public class MemberDrawerService
 {
-	public String getMemberDrawerList(
+	public String getMemberDrawerListByMbrSk(
 		HttpServletRequest request,
 		String argMbrSk)
 			throws SQLException 
@@ -39,15 +39,73 @@ public class MemberDrawerService
 
 			// Get the content to display
 			ArrayList list = 
-				cDAO.selectMemberDrawerList(con, argMbrSk);
+				cDAO.selectMemberDrawerListByMbrSk(con, argMbrSk);
 
 			if(con != null) con.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".getMemberDrawerListByMbrSk(): " + e);
+		}
+		finally
+		{
+			if(con != null) con.close();
+		}
 
+		return listJson;
+	}
+
+	public String getMemberDrawerListByWildcard(
+		HttpServletRequest request,
+		String argMbrSk,
+		String argSearchTerm)
+			throws SQLException 
+	{
+		Connection con = null;
+
+		String listJson = "";
+
+		try
+		{
+			MemberDrawerDAO cDAO = new MemberDrawerDAO();
+
+			// Get the Db connection
+			Context initialContext = new InitialContext();
+			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
+			con =  ds.getConnection();
+
+			con.setAutoCommit(false);
+
+			// Get the content to display
+			ArrayList list = 
+				cDAO.selectMemberDrawerListByWildcard(con, argMbrSk, argSearchTerm);
+
+			if(con != null) con.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".getMemberDrawerListByWildcard(): " + e);
+		}
+		finally
+		{
+			if(con != null) con.close();
+		}
+
+		return listJson;
+	}
+
+	private String getMemberDrawerList(ArrayList argList)
+		throws Exception 
+	{
+		String listJson = "";
+
+		try
+		{
 			ArrayList hmList = new ArrayList();
 
-			for(int i=0; i<list.size(); i++)
+			for(int i=0; i<argList.size(); i++)
 			{
-				MemberDrawer md = (MemberDrawer)list.get(i);
+				MemberDrawer md = (MemberDrawer)argList.get(i);
 
 				String drwSk = md.getDrwSk();
 				String mbrSk = md.getMbrSk();
@@ -108,7 +166,6 @@ public class MemberDrawerService
 		}
 		finally
 		{
-			if(con != null) con.close();
 		}
 
 		return listJson;
