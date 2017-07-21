@@ -42,6 +42,9 @@ public class MemberDrawerService
 				cDAO.selectMemberDrawerListByMbrSk(con, argMbrSk);
 
 			if(con != null) con.close();
+
+			listJson = 
+				getMemberDrawerList(list);
 		}
 		catch(Exception e)
 		{
@@ -81,6 +84,9 @@ public class MemberDrawerService
 				cDAO.selectMemberDrawerListByWildcard(con, argMbrSk, argSearchTerm);
 
 			if(con != null) con.close();
+
+			listJson = 
+					getMemberDrawerList(list);
 		}
 		catch(Exception e)
 		{
