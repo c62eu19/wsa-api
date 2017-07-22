@@ -90,8 +90,17 @@ public class MemberDrawerListWS extends HttpServlet
 
 			if(searchType.equalsIgnoreCase("WILDCARD"))
 			{
-				mbrDrawerJson = 
-					mds.getMemberDrawerListByWildcard(request, mbrSk, searchTerm);
+				// If an empty searchTerm is entered then get the member's drawer
+				if(searchTerm == null || searchTerm.equals(""))
+				{
+					mbrDrawerJson = 
+						mds.getMemberDrawerListByMbrSk(request, mbrSk);
+				}
+				else
+				{
+					mbrDrawerJson = 
+						mds.getMemberDrawerListByWildcard(request, mbrSk, searchTerm);
+				}
 			}
 			else
 			{
