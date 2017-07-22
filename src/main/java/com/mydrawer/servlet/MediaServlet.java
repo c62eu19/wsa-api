@@ -38,7 +38,7 @@ public class MediaServlet extends HttpServlet
 			InputStream is = request.getPart(part.getName()).getInputStream();
 			String fileName = getFileName(part);
 
-			FileOutputStream os = new FileOutputStream(System.getenv("OPENSHIFT_DATA_DIR") + "images/" + fileName);
+			FileOutputStream os = new FileOutputStream(System.getenv("OPENSHIFT_DATA_DIR") + "media/" + fileName);
 			byte[] bytes = new byte[BUFFER_LENGTH];
 
 			int read = 0;

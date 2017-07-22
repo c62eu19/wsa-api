@@ -57,6 +57,59 @@ public class MemberDrawerDAO
 		return list;
 	}
 
+	public ArrayList selectMemberDrawerListByTraSk(
+		Connection argCon,
+		String argMbrSk,
+		String argTraSk)
+			throws SQLException
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		ArrayList list = new ArrayList();
+
+		try
+		{
+			String sql = 
+				"SELECT a.drw_sk, " +
+				 "a.mbr_sk, " + 
+				 "a.tra_sk, " + 
+				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
+				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
+				 "a.type_id, " + 
+				 "a.title, " + 
+				 "a.text, " + 
+				 "a.url, " +
+				 "b.name " +
+				"FROM member_drawer a, " +
+				 "member_tray b " +
+				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
+				 "(a.tra_sk = CAST(? AS integer)) AND " +
+				 "(a.tra_sk = b.tra_sk) " +
+				"ORDER BY a.drw_sk DESC";
+
+			ps = argCon.prepareStatement(sql);
+
+			ps.setString(1,argMbrSk);
+			ps.setString(2,argTraSk);
+
+			rs = ps.executeQuery();
+
+			list = this.selectMemberDrawerList(rs);
+		}
+		catch(Exception ex)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByTraSk(): " + ex);
+		}
+		finally
+		{
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();
+		}
+
+		return list;
+	}
+
 	public ArrayList selectMemberDrawerListByWildcard(
 		Connection argCon,
 		String argMbrSk,
@@ -86,7 +139,7 @@ public class MemberDrawerDAO
 				"FROM member_drawer a, " +
 				 "member_tray b " +
 				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
-				 "(a.title ILIKE ?) AND " +
+				 "(a.title ILIKE ? OR a.text ILIKE ?) AND " +
 				 "(a.tra_sk = b.tra_sk) " +
 				"ORDER BY a.drw_sk DESC, b.name ASC";
 
@@ -94,6 +147,7 @@ public class MemberDrawerDAO
 
 			ps.setString(1,argMbrSk);
 			ps.setString(2,searchTerm);
+			ps.setString(3,searchTerm);
 
 			rs = ps.executeQuery();
 
@@ -320,8 +374,6 @@ public class MemberDrawerDAO
 				"WHERE (drw_sk = CAST(? AS integer))";
 
 			ps = argCon.prepareStatement(sql);
-
-System.out.println(argDrwSk + "-" + argTraSk);
 
 			// Set the parms
 			ps.setString(1, argTraSk);

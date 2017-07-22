@@ -58,6 +58,48 @@ public class MemberDrawerService
 		return listJson;
 	}
 
+	public String getMemberDrawerListByTraSk(
+		HttpServletRequest request,
+		String argMbrSk,
+		String argTraSk)
+			throws SQLException 
+	{
+		Connection con = null;
+
+		String listJson = "";
+
+		try
+		{
+			MemberDrawerDAO cDAO = new MemberDrawerDAO();
+
+			// Get the Db connection
+			Context initialContext = new InitialContext();
+			DataSource ds = (DataSource) initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
+			con =  ds.getConnection();
+
+			con.setAutoCommit(false);
+
+			// Get the content to display
+			ArrayList list = 
+				cDAO.selectMemberDrawerListByTraSk(con, argMbrSk, argTraSk);
+
+			if(con != null) con.close();
+
+			listJson = 
+				getMemberDrawerList(list);
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION: " + this.getClass().getName() + ".getMemberDrawerListByTraSk(): " + e);
+		}
+		finally
+		{
+			if(con != null) con.close();
+		}
+
+		return listJson;
+	}
+
 	public String getMemberDrawerListByWildcard(
 		HttpServletRequest request,
 		String argMbrSk,

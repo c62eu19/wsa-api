@@ -77,6 +77,7 @@ public class MemberDrawerListWS extends HttpServlet
 			String searchType = jo.get("searchType").toString();
 			String mbrSkToken = jo.get("mbrSkToken").toString();
 			String searchTerm = jo.getString("searchTerm").toString();
+			String traSk = jo.getString("traSk").toString();
 
 			MemberService ms = new MemberService();
 
@@ -94,7 +95,8 @@ public class MemberDrawerListWS extends HttpServlet
 			}
 			else
 			{
-
+				mbrDrawerJson = 
+					mds.getMemberDrawerListByTraSk(request, mbrSk, traSk);
 			}
 
 			out.println(mbrDrawerJson);
