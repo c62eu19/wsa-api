@@ -160,6 +160,7 @@ public class SignInWS extends HttpServlet
 		}
 		catch(Exception e)
 		{
+			member.setStatusInd("E");
 			System.out.println("EXCEPTION: " + this.getClass().getName() + ".signInMember(): " + e);
 		}
 		finally

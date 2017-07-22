@@ -107,7 +107,7 @@ public class SignUpWS extends HttpServlet
 				}
 				else
 				{
-					hm.put("statusCd","-1");
+					hm.put("statusInd","E");
 					hm.put("statusMsg","There already is a member with this same email and password. " +
 						"Please choose another email address.");
 					hm.put("mbrSkToken","-1");
@@ -116,7 +116,7 @@ public class SignUpWS extends HttpServlet
 			}
 			else
 			{
-				hm.put("statusCd","-1");
+				hm.put("statusCd","E");
 				hm.put("statusMsg","The entered Email is not a valid Email address.");
 				hm.put("mbrSkToken","-1");
 				hm.put("mbrName","");
