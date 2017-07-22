@@ -93,17 +93,15 @@ public class SignUpWS extends HttpServlet
 						// Encrypt the mbrSk
 						String mbrSkToken = ms.encryptMbrSk(mbrSk);
 
-						hm.put("statusCd","0");
-						hm.put("statusMsg","");
+						hm.put("statusInd","A");
 						hm.put("mbrSkToken",mbrSkToken);
 						hm.put("mbrName",name);
 					}
 					else
 					{
 						// Display the Error
-						hm.put("statusCd","-1");
-						hm.put("statusMsg","There was an error in creating your account. Please try again.");
-						hm.put("mbrSkToken","-1");
+						hm.put("statusInd","E");
+						hm.put("mbrSkToken","");
 						hm.put("mbrName","");
 					}
 				}

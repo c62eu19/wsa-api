@@ -60,45 +60,42 @@ public class SignInWS extends HttpServlet
 			member = 
 				this.signInMember(request, email, encryptedPword);
 
-			String mbrSk = member.getMbrSk();
+			String statusInd = "";
 
+			String mbrSk = "";
+			String mbrSkToken = "";
 			String mbrTrayJson = "";
 			String mbrDrawerJson = "";
 
-			// Based on a successful sign in, get the member content
-			if(Integer.parseInt(mbrSk) > 0)
+			statusInd = member.getStatusInd();
+
+			// Check the member's status
+			if(statusInd.equalsIgnoreCase("A"))
 			{
-				// Check if the member's account has been disabled
-				if(member.getStatusInd().equalsIgnoreCase("D"))
-				{
-				}
-				else
-				{
-					MemberTrayService mts = 
-						new MemberTrayService();
+				mbrSk = member.getMbrSk();
 
-					mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
+				// Encrypt the mbrSk
+				mbrSkToken = ms.encryptMbrSk(mbrSk);
 
-					MemberDrawerService mds = 
-						new MemberDrawerService();
+				MemberTrayService mts = 
+					new MemberTrayService();
 
-					mbrDrawerJson = mds.getMemberDrawerListByMbrSk(request, mbrSk);
-				}
+				mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
+
+				MemberDrawerService mds = 
+					new MemberDrawerService();
+
+				mbrDrawerJson = mds.getMemberDrawerListByMbrSk(request, mbrSk);
 			}
 			else
 			{
+				// Other problem with Sign in
+				statusInd = "E";
 			}
-
-			// Encrypt the mbrSk
-			String mbrSkToken = ms.encryptMbrSk(mbrSk);
-
-			// TODO: Get the mmeber's drawer
-
 
 			HashMap hm = new HashMap();
 
-			hm.put("statusCd","0");
-			hm.put("statusMsg","");
+			hm.put("statusInd",statusInd);
 			hm.put("mbrSkToken",mbrSkToken);
 			hm.put("mbrName",member.getName());
 			hm.put("mbrTrayJson", mbrTrayJson);
@@ -150,7 +147,7 @@ public class SignInWS extends HttpServlet
 			String mbrSk = member.getMbrSk();
 
 			// Based on a successful sign in, update the sign in count for the member
-			if(!mbrSk.equals("-1"))
+			if(Integer.parseInt(mbrSk) > 0)
 			{
 				mDAO.updateMemberSignin(
 					con, 
