@@ -61,10 +61,10 @@ public class SignUpWS extends HttpServlet
 
 			HashMap hm = new HashMap();
 
+			// Check if valid email address
 			int statusCd = 
 				this.validateMemberEmailAddress(request, email);
 
-			// Check if valid email address
 			if(statusCd == 0)
 			{
 				// Check if member already signed up with email
@@ -101,6 +101,9 @@ public class SignUpWS extends HttpServlet
 					{
 						// Display the Error
 						hm.put("statusInd","E");
+						hm.put("statusMsg","We apologize but there is an problem with our Member Sign up. " +
+								"Please try again and if the problem persists then please send us a message " +
+								"by clicking Contact Us from the Hamburger menu above.");
 						hm.put("mbrSkToken","");
 						hm.put("mbrName","");
 					}
@@ -108,7 +111,7 @@ public class SignUpWS extends HttpServlet
 				else
 				{
 					hm.put("statusInd","E");
-					hm.put("statusMsg","There already is a member with this same email and password. " +
+					hm.put("statusMsg","There already is a member with this same email. " +
 						"Please choose another email address.");
 					hm.put("mbrSkToken","-1");
 					hm.put("mbrName","");
@@ -116,7 +119,7 @@ public class SignUpWS extends HttpServlet
 			}
 			else
 			{
-				hm.put("statusCd","E");
+				hm.put("statusInd","E");
 				hm.put("statusMsg","The entered Email is not a valid Email address.");
 				hm.put("mbrSkToken","-1");
 				hm.put("mbrName","");
