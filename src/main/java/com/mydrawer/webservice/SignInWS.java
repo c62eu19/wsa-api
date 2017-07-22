@@ -144,11 +144,13 @@ public class SignInWS extends HttpServlet
 					argEmail, 
 					argEncryptedPword);
 
-			String mbrSk = member.getMbrSk();
+			String statusInd = member.getStatusInd();
 
 			// Based on a successful sign in, update the sign in count for the member
-			if(Integer.parseInt(mbrSk) > 0)
+			if(!statusInd.equalsIgnoreCase("E"))
 			{
+				String mbrSk = member.getMbrSk();
+
 				mDAO.updateMemberSignin(
 					con, 
 					mbrSk);

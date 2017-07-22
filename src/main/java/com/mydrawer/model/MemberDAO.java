@@ -1,6 +1,5 @@
 package com.mydrawer.model;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.IOException;
 import java.sql.*;
@@ -54,7 +53,7 @@ public class MemberDAO
 				if(tMbrSk == null) tMbrSk = "0";
 				if(tEmail == null) tEmail = "";
 				if(tName == null) tName = "";
-				if(tStatusInd == null) tStatusInd = "N";
+				if(tStatusInd == null) tStatusInd = "E";
 
 				member.setMbrSk(tMbrSk);
 				member.setEmail(tEmail);
@@ -64,7 +63,7 @@ public class MemberDAO
 		}
 		catch(Exception ex)
 		{
-			member.setMbrSk("-1");
+			member.setStatusInd("E");
 			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberSignin(): " + ex);
 		}
 		finally
@@ -75,7 +74,7 @@ public class MemberDAO
 
 		if(rowCount <= 0)
 		{
-			member.setMbrSk("-1");
+			member.setStatusInd("E");
 		}
 
 		return member;
