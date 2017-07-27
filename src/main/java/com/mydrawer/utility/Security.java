@@ -1,7 +1,6 @@
 package com.mydrawer.utility;
 
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 

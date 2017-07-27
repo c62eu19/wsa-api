@@ -88,14 +88,18 @@ public class SignUpWS extends HttpServlet
 						MemberTrayService mts = 
 							new MemberTrayService();
 
-						mts.addMemberTray(request, mbrSk, "Default");
+						mts.addMemberTray(request, mbrSk, "Favorites");
 
 						// Encrypt the mbrSk
 						String mbrSkToken = ms.encryptMbrSk(mbrSk);
 
+						String mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
+
 						hm.put("statusInd","A");
 						hm.put("mbrSkToken",mbrSkToken);
 						hm.put("mbrName",name);
+						hm.put("mbrTrayJson", mbrTrayJson);
+						hm.put("mbrDrawerJson", "");
 					}
 					else
 					{
@@ -106,6 +110,8 @@ public class SignUpWS extends HttpServlet
 								"by clicking Contact Us from the Hamburger menu above.");
 						hm.put("mbrSkToken","");
 						hm.put("mbrName","");
+						hm.put("mbrTrayJson", "");
+						hm.put("mbrDrawerJson", "");
 					}
 				}
 				else
@@ -115,6 +121,8 @@ public class SignUpWS extends HttpServlet
 						"Please choose another email address.");
 					hm.put("mbrSkToken","-1");
 					hm.put("mbrName","");
+					hm.put("mbrTrayJson", "");
+					hm.put("mbrDrawerJson", "");
 				}
 			}
 			else
@@ -123,6 +131,8 @@ public class SignUpWS extends HttpServlet
 				hm.put("statusMsg","The entered Email is not a valid Email address.");
 				hm.put("mbrSkToken","-1");
 				hm.put("mbrName","");
+				hm.put("mbrTrayJson", "");
+				hm.put("mbrDrawerJson", "");
 			}
 
 			// Convert the hashmap to a JSON string

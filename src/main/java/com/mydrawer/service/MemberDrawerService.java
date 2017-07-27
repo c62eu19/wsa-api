@@ -127,8 +127,7 @@ public class MemberDrawerService
 
 			if(con != null) con.close();
 
-			listJson = 
-					getMemberDrawerList(list);
+			listJson = getMemberDrawerList(list);
 		}
 		catch(Exception e)
 		{
@@ -297,8 +296,6 @@ public class MemberDrawerService
 			MemberDrawerDAO cDAO = new MemberDrawerDAO();
 
 			con.commit();
-
-			System.out.println(argDrwSk + "-" + argTraSk);
 
 			statusCd = 
 				cDAO.updateMemberDrawer(
