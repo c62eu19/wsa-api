@@ -1,7 +1,7 @@
-package com.mydrawer.bean;
+package com.mydrawer.obj;
 
-public class MemberDrawer 
-{
+public class Drawer {
+
 	private String drwSk = null;
 	private String mbrSk = null;
 	private String traSk = null;

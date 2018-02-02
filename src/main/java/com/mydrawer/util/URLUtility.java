@@ -1,4 +1,4 @@
-package com.mydrawer.utility;
+package com.mydrawer.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +24,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.mydrawer.bean.Media;
+import com.mydrawer.obj.Media;
 
 public class URLUtility
 {

@@ -1,7 +1,7 @@
-package com.mydrawer.bean;
+package com.mydrawer.obj;
 
-public class Media
-{
+public class Media {
+
 	private String mediaType = null;
 
 	private String mediaUrl = null;
@@ -10,63 +10,51 @@ public class Media
 	private String mediaImage = null;
 	private String mediaSource = null;
 
-	public String getMediaType()
-	{
+	public String getMediaType() {
 		return mediaType;
 	}
 
-	public void setMediaType(String mediaType)
-	{
+	public void setMediaType(String mediaType) {
 		this.mediaType = mediaType;
 	}
 
-	public String getMediaUrl()
-	{
+	public String getMediaUrl() {
 		return mediaUrl;
 	}
 
-	public void setMediaUrl(String mediaUrl)
-	{
+	public void setMediaUrl(String mediaUrl) {
 		this.mediaUrl = mediaUrl;
 	}
 
-	public String getMediaTitle()
-	{
+	public String getMediaTitle() {
 		return mediaTitle;
 	}
 
-	public void setMediaTitle(String mediaTitle)
-	{
+	public void setMediaTitle(String mediaTitle) {
 		this.mediaTitle = mediaTitle;
 	}
 
-	public String getMediaDesc()
-	{
+	public String getMediaDesc() {
 		return mediaDesc;
 	}
 
-	public void setMediaDesc(String mediaDesc)
-	{
+	public void setMediaDesc(String mediaDesc) {
 		this.mediaDesc = mediaDesc;
 	}
 
-	public String getMediaImage()
-	{
+	public String getMediaImage() {
 		return mediaImage;
 	}
 
-	public void setMediaImage(String mediaImage)
-	{
+	public void setMediaImage(String mediaImage) {
 		this.mediaImage = mediaImage;
 	}
 
-	public String getMediaSource()
-	{
+	public String getMediaSource() {
 		return mediaSource;
 	}
 
-	public void setMediaSource(String mediaSource)
-	{
+	public void setMediaSource(String mediaSource) {
 		this.mediaSource = mediaSource;
 	}
 

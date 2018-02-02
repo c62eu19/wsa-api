@@ -14,78 +14,63 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.service.MemberService;
-import com.mydrawer.service.MemberTrayService;
-import com.mydrawer.utility.Security;
+import com.mydrawer.util.Security;
 
-@WebServlet(name = "membertrayws",urlPatterns = {"/membertrayws/*"})
+@WebServlet(name = "Tray",urlPatterns = {"/Tray/*"})
 
-public class MemberTrayWS extends HttpServlet
-{
+public class TrayWS extends HttpServlet {
+
 	private static final long serialVersionUID = 2857847752169838915L;
 
-	protected void doGet(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
-			String mbrSkToken = request.getPathInfo();
+		try {
+			String encryptedCollectionName = request.getPathInfo();
 
 			// Exclude the beginning / of the query param
-			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length());
+			String decryptedCollectionName = 
+				encryptedCollectionName.substring(1, encryptedCollectionName.length());
 
-			MemberService ms = new MemberService();
+			// Decrypt encrypted collection
+			String collectionName = new Security().decryptCollectionName(decryptedCollectionName);
 
-			// Decrypt mbrSk encrypted token
-			String mbrSk = ms.decryptMbrSk(newMbrSkToken);
-
-			MemberTrayService mts = new MemberTrayService();
-
-			String mbrTrayJson = 
-				mts.getMemberTrayList(request, mbrSk);
+			String mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
 
 			out.println(mbrTrayJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doGet(): " + e);
 		}
 	}
 
-	protected void doPost(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String mbrSkToken = jo.get("mbrSkToken").toString();
+			String collectionName = jo.get("collectionName").toString();
 			String name = jo.getString("name").toString();
 
-			Security s = new Security();
-
 			// Decrypt the mbrSkToken
-			String mbrSk = s.decrypt(mbrSkToken);
+			String mbrSk = new Security().decryptCollectionName(collectionName);
 
-			MemberTrayService mts = new MemberTrayService();
+			TrayMediator mts = new TrayMediator();
 
 			int statusCd = 
 				mts.addMemberTray(request, mbrSk, name);
@@ -93,18 +78,15 @@ public class MemberTrayWS extends HttpServlet
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doPost(): " + e);
 		}
 	}
 
-	protected void doPut(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		BufferedReader br = null;
@@ -112,8 +94,7 @@ public class MemberTrayWS extends HttpServlet
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			isr = new InputStreamReader(request.getInputStream());
 	        br = new BufferedReader(isr);
 
@@ -132,31 +113,31 @@ public class MemberTrayWS extends HttpServlet
 			// Decrypt the mbrSkToken
 			String mbrSk = s.decrypt(mbrSkToken);
 
-			MemberTrayService mts = new MemberTrayService();
+			TrayMediator mts = new TrayMediator();
 
-			int statusCd = 
-				mts.updateMemberTray(request, traSk, name);
+			int statusCd = mts.updateMemberTray(request, traSk, name);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doPut(): " + e);
 		}
-		finally
-		{
-			if(isr != null) isr.close();
-			if(br != null) br.close();
+		finally {
+			if(isr != null) {
+				isr.close();
+			}
+
+			if(br != null) {
+				br.close();
+			}
 		}
 	}
 
-	protected void doDelete(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		BufferedReader br = null;
@@ -164,8 +145,7 @@ public class MemberTrayWS extends HttpServlet
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			isr = new InputStreamReader(request.getInputStream());
 	        br = new BufferedReader(isr);
 
@@ -184,23 +164,25 @@ public class MemberTrayWS extends HttpServlet
 			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
 			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
 
-			MemberTrayService mts = new MemberTrayService();
+			TrayMediator mts = new TrayMediator();
 
-			int statusCd = 
-				mts.deleteMemberTray(request, traSk);
+			int statusCd = mts.deleteMemberTray(request, traSk);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".doDelete(): " + e);
 		}
-		finally
-		{
-			if(isr != null) isr.close();
-			if(br != null) br.close();
+		finally {
+			if(isr != null) {
+				isr.close();
+			}
+
+			if(br != null) {
+				br.close();
+			}
 		}
 	}
 

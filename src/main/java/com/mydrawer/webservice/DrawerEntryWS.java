@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.service.MemberDrawerService;
-import com.mydrawer.utility.Security;
+import com.mydrawer.mediator.DrawerMediator;
+import com.mydrawer.util.Security;
 
 @WebServlet(name = "memberdrawerentryws",urlPatterns = {"/memberdrawerentryws/*"})
-public class MemberDrawerEntryWS extends HttpServlet
+public class DrawerEntryWS extends HttpServlet
 {
 	private static final long serialVersionUID = 2857847752169838915L;
 
@@ -52,7 +52,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 			String mbrSk = s.decrypt(mbrSkToken);
 
 			// Add the new post
-			MemberDrawerService mds = new MemberDrawerService();
+			DrawerMediator mds = new DrawerMediator();
 
 			mds.addMemberDrawer(
 				request,
@@ -113,7 +113,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 			String mbrSk = s.decrypt(mbrSkToken);
 
 			// Add the new post
-			MemberDrawerService mds = new MemberDrawerService();
+			DrawerMediator mds = new DrawerMediator();
 
 			int statusCd = 
 				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
@@ -167,7 +167,7 @@ public class MemberDrawerEntryWS extends HttpServlet
 			// Decrypt and parse out the mbrSkToken
 			String mbrSk = s.decrypt(mbrSkToken);
 
-			MemberDrawerService mds = new MemberDrawerService();
+			DrawerMediator mds = new DrawerMediator();
 
 			int statusCd = 
 				mds.deleteMemberDrawer(request, drwSk);

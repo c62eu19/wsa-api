@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 
 import org.json.JSONObject;
 
-import com.mydrawer.service.MemberDrawerService;
+import com.mydrawer.mediator.DrawerMediator;
 
 @WebServlet(name = "imageentryws",urlPatterns = {"/imageentryws/*"})
 public class ImageEntryWS extends HttpServlet
@@ -95,7 +95,7 @@ public class ImageEntryWS extends HttpServlet
 			String typeId = "3";
 
 			// Add the new post
-			MemberDrawerService mds = new MemberDrawerService();
+			DrawerMediator mds = new DrawerMediator();
 
 			mds.addMemberDrawer(
 				request,

@@ -1,12 +1,16 @@
-package com.mydrawer.utility;
+package com.mydrawer.util;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class FileUtility
@@ -20,10 +24,7 @@ public class FileUtility
 
 		try
 		{
-			String pagesFile = 
-				System.getenv("OPENSHIFT_DATA_DIR") + argPropFile;
-
-			fis = new FileInputStream(pagesFile);
+			fis = new FileInputStream(argPropFile);
 			prop.load(fis);    
 			fis.close();
 		}
@@ -40,8 +41,30 @@ public class FileUtility
 		return prop;
 	}
 
+	public String readDirectoryOfFiles(String argDir)
+	{
+		String output = "";
+
+		Path dir = Paths.get(argDir);
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
+		{
+			for (Path file: stream)
+			{
+				output += readFile(file.toFile());
+		    }
+		}
+		catch (IOException | DirectoryIteratorException e)
+		{
+			System.out.println(
+				"EXCEPTION: " + this.getClass().getName() + ".readDirectoryOfFiles(): " + e);
+		}
+
+		return output;
+	}
+
 	public String readFile(File argFile) 
-		throws Exception 
+		throws IOException 
 	{
 		InputStream is = null; 
 		BufferedReader br = null;
@@ -60,7 +83,7 @@ public class FileUtility
 				output += line.trim();
 			}
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			System.out.println(
 				"EXCEPTION: " + this.getClass().getName() + ".readFile(): " + e);

@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.bean.Media;
-import com.mydrawer.service.MemberDrawerService;
-import com.mydrawer.utility.URLUtility;
+import com.mydrawer.mediator.DrawerMediator;
+import com.mydrawer.obj.Media;
+import com.mydrawer.util.URLUtility;
 
 @WebServlet(name = "urlpartsws",urlPatterns = {"/urlpartsws/*"})
 public class UrlPartsWS extends HttpServlet
@@ -54,7 +54,7 @@ public class UrlPartsWS extends HttpServlet
 			{
 				Media media = new Media();
 
-				MemberDrawerService sf = new MemberDrawerService();
+				DrawerMediator sf = new DrawerMediator();
 
 				// Default to ARTICLE unless it's a video
 				mediaType = "ARTICLE";

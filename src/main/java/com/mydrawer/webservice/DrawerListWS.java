@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.service.MemberDrawerService;
-import com.mydrawer.service.MemberService;
+import com.mydrawer.mediator.DrawerMediator;
+import com.mydrawer.mediator.UserMediator;
 
-@WebServlet(name = "memberdrawerlistws",urlPatterns = {"/memberdrawerlistws/*"})
+@WebServlet(name = "MemberDrawerList",urlPatterns = {"/MemberDrawerList/*"})
 
-public class MemberDrawerListWS extends HttpServlet
+public class DrawerListWS extends HttpServlet
 {
 	private static final long serialVersionUID = 2857847752169838915L;
 
@@ -37,12 +37,12 @@ public class MemberDrawerListWS extends HttpServlet
 			// Exclude the beginning / of the query param
 			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length());
 
-			MemberService ms = new MemberService();
+			UserMediator ms = new UserMediator();
 
 			// Decrypt mbrSk encrypted token
 			String mbrSk = ms.decryptMbrSk(newMbrSkToken);
 
-			MemberDrawerService mts = new MemberDrawerService();
+			DrawerMediator mts = new DrawerMediator();
 
 			String mbrDrawerJson = 
 				mts.getMemberDrawerListByMbrSk(request, mbrSk);
@@ -79,12 +79,12 @@ public class MemberDrawerListWS extends HttpServlet
 			String searchTerm = jo.getString("searchTerm").toString();
 			String traSk = jo.getString("traSk").toString();
 
-			MemberService ms = new MemberService();
+			UserMediator ms = new UserMediator();
 
 			// Decrypt mbrSk encrypted token
 			String mbrSk = ms.decryptMbrSk(mbrSkToken);
 
-			MemberDrawerService mds = new MemberDrawerService();
+			DrawerMediator mds = new DrawerMediator();
 
 			String mbrDrawerJson = "";
 

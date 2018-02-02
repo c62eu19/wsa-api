@@ -1,11 +1,12 @@
-package com.mydrawer.model;
+package com.mydrawer.db;
 
 import java.util.*;
+
+import com.mydrawer.obj.*;
+
 import java.sql.*;
 
-import com.mydrawer.bean.*;
-
-public class MemberDrawerDAO 
+public class DbDrawer 
 {
 	public ArrayList selectMemberDrawerListByMbrSk(
 		Connection argCon,
@@ -187,7 +188,7 @@ public class MemberDrawerDAO
 				String url = argRs.getString("url");
 				String name = argRs.getString("name");
 
-				MemberDrawer md = new MemberDrawer();
+				Drawer md = new Drawer();
 
 				md.setDrwSk(drwSk);
 				md.setMbrSk(mbrSk);
@@ -215,7 +216,7 @@ public class MemberDrawerDAO
 		return list;
 	}
 
-	public MemberDrawer selectMemberDrawer(
+	public Drawer selectMemberDrawer(
 		Connection argCon,
 		String argTraSk)
 			throws SQLException
@@ -223,7 +224,7 @@ public class MemberDrawerDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		MemberDrawer md = new MemberDrawer();
+		Drawer md = new Drawer();
 
 		try
 		{

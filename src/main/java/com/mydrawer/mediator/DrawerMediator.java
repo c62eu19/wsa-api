@@ -1,4 +1,4 @@
-package com.mydrawer.service;
+package com.mydrawer.mediator;
 
 import java.io.*;
 import java.util.*;
@@ -12,10 +12,10 @@ import javax.sql.DataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.mydrawer.bean.MemberDrawer;
-import com.mydrawer.model.MemberDrawerDAO;
+import com.mydrawer.db.DbDrawer;
+import com.mydrawer.obj.Drawer;
 
-public class MemberDrawerService
+public class DrawerMediator
 {
 	public String getMemberDrawerListByMbrSk(
 		HttpServletRequest request,
@@ -152,7 +152,7 @@ public class MemberDrawerService
 
 			for(int i=0; i<argList.size(); i++)
 			{
-				MemberDrawer md = (MemberDrawer)argList.get(i);
+				Drawer md = (Drawer)argList.get(i);
 
 				String drwSk = md.getDrwSk();
 				String mbrSk = md.getMbrSk();
