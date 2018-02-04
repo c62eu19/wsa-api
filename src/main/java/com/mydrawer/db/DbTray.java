@@ -12,15 +12,14 @@ import org.json.JSONArray;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mydrawer.obj.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
 public class DbTray {
 
-	private static final Logger logger = Logger.getLogger(DbUser.class.getName());
+	private static final Logger logger = Logger.getLogger(DbTray.class.getName());
 
-	public ArrayList<HashMap> selectTrayList(HttpServletRequest request, HashMap<String,String> args) {
+	public String selectTrayList(HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
 
@@ -30,7 +29,7 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
@@ -65,10 +64,11 @@ public class DbTray {
 		}
 
 		// Convert the hashmap to a JSON string
-//		JSONArray joPayload = new JSONArray(hmList);
-//		listJson = joPayload.toString();
+		JSONArray joPayload = new JSONArray(list);
 
-		return list;
+		String listJson = joPayload.toString();
+
+		return listJson;
 	}
 
 	public HashMap<String,String> selectTray(HttpServletRequest request, HashMap<String,String> args) {
@@ -81,7 +81,7 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
@@ -122,7 +122,7 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
@@ -149,7 +149,7 @@ public class DbTray {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
@@ -173,7 +173,7 @@ public class DbTray {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);

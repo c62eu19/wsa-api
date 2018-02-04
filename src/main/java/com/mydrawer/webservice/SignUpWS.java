@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.mydrawer.db.DbTray;
 import com.mydrawer.db.DbUser;
 import com.mydrawer.exception.InvalidSignupException;
 import com.mydrawer.util.DateUtility;
@@ -56,8 +57,11 @@ public class SignUpWS extends HttpServlet {
 					"This email is already registered. Please choose another email or sign in.");
 			}
 
-			// Get the User's collection name which is based on their email
-			String collectionName = this.deriveCollectionName(email);
+			/*
+			 *  Convert the user's email to a collection name by removing all 
+			 *  special characters and change to lowercase
+			 */
+			String collectionName = email.replaceAll("[^a-zA-Z0-9]", "").toLowerCase().trim();
 
 			// Encrypt the password
 			String encryptedPword = new Security().encryptPword(email, password);
@@ -86,18 +90,21 @@ public class SignUpWS extends HttpServlet {
 			}
 
 			// Add a default tray for the member
-//			MemberTrayService mts = new MemberTrayService();
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", collectionName);
+			args.put("tray-name", "Favorites");
 
-//			mts.addMemberTray(request, mbrSk, "Favorites");
+			new DbTray().insertTray(request, args);
 
-			// Encrypt the mbrSk
-//			String mbrSkToken = userService.encryptMbrSk(mbrSk);
+			// Encrypt the collection name and use as the security token for all service calls
+			String encryptedCollectionName = 
+				new Security().encryptCollectionName(collectionName);
 
 			String trayJson = "";
 			String drawerJson = "";
 
 			this.sendResponse(
-				request, response, "A", "Ok", collectionName, name, trayJson, drawerJson); 
+				request, response, "A", "Ok", encryptedCollectionName, name, trayJson, drawerJson); 
 		}
 		catch(InvalidSignupException e) {
 			logger.log(
@@ -113,27 +120,6 @@ public class SignUpWS extends HttpServlet {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
-	}
-
-	private String deriveCollectionName(String email) {
-
-		String collectionName = "";
-
-		try {
-			/*
-			 *  Convert the user's email to a collection name by removing all special characters and 
-			 *  change to lowercase
-			 */
-			collectionName = email.replaceAll("[^a-zA-Z0-9]", "").toLowerCase().trim();
-		}
-		catch(Exception e) {
-			collectionName = "";
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".deriveCollectionName(): ", e);
-		}
-		finally {}
-
-		return collectionName;
 	}
 
 	private void sendResponse(
@@ -156,12 +142,12 @@ public class SignUpWS extends HttpServlet {
 		try {
 			HashMap<String,String> hm = new HashMap<String,String>();
 
-			hm.put("statusInd", statusInd);
-			hm.put("statusMsg", statusMsg);
-			hm.put("collectioName", collectionName);
-			hm.put("userName", userName);
-			hm.put("trayJson", trayJson);
-			hm.put("drawerJson", drawerJson);
+			hm.put("status-ind", statusInd);
+			hm.put("status-msg", statusMsg);
+			hm.put("collection-name", collectionName);
+			hm.put("user-name", userName);
+			hm.put("tray-json", trayJson);
+			hm.put("drawer-json", drawerJson);
 
 			// Convert the hashmap to a JSON string
 			JSONObject joPayload = new JSONObject(hm);

@@ -1,434 +1,347 @@
 package com.mydrawer.db;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.mydrawer.obj.*;
+import javax.servlet.http.HttpServletRequest;
 
-import java.sql.*;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.json.JSONArray;
 
-public class DbDrawer 
-{
-	public ArrayList selectMemberDrawerListByMbrSk(
-		Connection argCon,
-		String argMbrSk)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
-		ArrayList list = new ArrayList();
+import static com.mongodb.client.model.Filters.eq;
 
-		try
-		{
-			String sql = 
-				"SELECT a.drw_sk, " +
-				 "a.mbr_sk, " + 
-				 "a.tra_sk, " + 
-				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
-				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
-				 "a.type_id, " + 
-				 "a.title, " + 
-				 "a.text, " + 
-				 "a.url, " +
-				 "b.name " +
-				"FROM member_drawer a, " +
-				 "member_tray b " +
-				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
-				 "(a.tra_sk = b.tra_sk) " +
-				"ORDER BY a.drw_sk DESC, b.name ASC";
+public class DbDrawer {
 
-			ps = argCon.prepareStatement(sql);
+	private static final Logger logger = Logger.getLogger(DbDrawer.class.getName());
 
-			ps.setString(1,argMbrSk);
+	public String selectDrawerList(HttpServletRequest request, HashMap<String,String> args) {
 
-			rs = ps.executeQuery();
+		MongoCursor<Document> cur = null;
 
-			list = this.selectMemberDrawerList(rs);
-		}
-		catch(Exception ex)
-		{
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByMbrSk(): " + ex);
-		}
-		finally
-		{
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
-		}
+		int rowCount = 0;
 
-		return list;
-	}
+		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
-	public ArrayList selectMemberDrawerListByTraSk(
-		Connection argCon,
-		String argMbrSk,
-		String argTraSk)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
-		ArrayList list = new ArrayList();
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
 
-		try
-		{
-			String sql = 
-				"SELECT a.drw_sk, " +
-				 "a.mbr_sk, " + 
-				 "a.tra_sk, " + 
-				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
-				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
-				 "a.type_id, " + 
-				 "a.title, " + 
-				 "a.text, " + 
-				 "a.url, " +
-				 "b.name " +
-				"FROM member_drawer a, " +
-				 "member_tray b " +
-				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
-				 "(a.tra_sk = CAST(? AS integer)) AND " +
-				 "(a.tra_sk = b.tra_sk) " +
-				"ORDER BY a.drw_sk DESC";
+			cur = collection.find().iterator();
 
-			ps = argCon.prepareStatement(sql);
+			while (cur.hasNext()) {
 
-			ps.setString(1,argMbrSk);
-			ps.setString(2,argTraSk);
+				rowCount++;
 
-			rs = ps.executeQuery();
+				Document document = cur.next();
 
-			list = this.selectMemberDrawerList(rs);
-		}
-		catch(Exception ex)
-		{
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByTraSk(): " + ex);
-		}
-		finally
-		{
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
-		}
+				String id = (String)document.get("_id").toString();
+				String trayId = (String)document.get("tray-id");
+				String insertedDate = (String)document.get("inserted-date");
+				String updatedDate = (String)document.get("updated-date");
+				String type = (String)document.get("type");
+				String title = (String)document.get("title");
+				String text = (String)document.get("text");
+				String url = (String)document.get("url");
 
-		return list;
-	}
+				HashMap<String,String> hm = new HashMap<String,String>();
 
-	public ArrayList selectMemberDrawerListByWildcard(
-		Connection argCon,
-		String argMbrSk,
-		String argSearchTerm)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+				hm.put("drawer-id", id);
+				hm.put("tray-id", trayId);
+				hm.put("inserted-date", insertedDate);
+				hm.put("updated-date", updatedDate);
+				hm.put("type", type);
+				hm.put("title", title);
+				hm.put("text", text);
+				hm.put("url", url);
 
-		ArrayList list = new ArrayList();
-
-		try
-		{
-			String searchTerm = "%" + argSearchTerm.toLowerCase() + "%";
-
-			String sql = 
-				"SELECT a.drw_sk, " +
-				 "a.mbr_sk, " + 
-				 "a.tra_sk, " + 
-				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
-				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
-				 "a.type_id, " + 
-				 "a.title, " + 
-				 "a.text, " + 
-				 "a.url, " +
-				 "b.name " +
-				"FROM member_drawer a, " +
-				 "member_tray b " +
-				"WHERE (a.mbr_sk = CAST(? AS integer)) AND " +
-				 "(a.title ILIKE ? OR a.text ILIKE ?) AND " +
-				 "(a.tra_sk = b.tra_sk) " +
-				"ORDER BY a.drw_sk DESC, b.name ASC";
-
-			ps = argCon.prepareStatement(sql);
-
-			ps.setString(1,argMbrSk);
-			ps.setString(2,searchTerm);
-			ps.setString(3,searchTerm);
-
-			rs = ps.executeQuery();
-
-			list = this.selectMemberDrawerList(rs);
-		}
-		catch(Exception ex)
-		{
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerListByWildcard(): " + ex);
-		}
-		finally
-		{
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
-		}
-
-		return list;
-	}
-
-	private ArrayList selectMemberDrawerList(ResultSet argRs)
-		throws SQLException
-	{
-		ArrayList list = new ArrayList();
-
-		try
-		{
-			// Process the resultset
-			while (argRs.next())
-			{
-				String drwSk = argRs.getString("drw_sk");
-				String mbrSk = argRs.getString("mbr_sk");
-				String traSk = argRs.getString("tra_sk");
-				String insertedDt = argRs.getString("inserted_dt");
-				String updatedDt = argRs.getString("updated_dt");
-				String typeId = argRs.getString("type_id");
-				String title = argRs.getString("title");
-				String text = argRs.getString("text");
-				String url = argRs.getString("url");
-				String name = argRs.getString("name");
-
-				Drawer md = new Drawer();
-
-				md.setDrwSk(drwSk);
-				md.setMbrSk(mbrSk);
-				md.setTraSk(traSk);
-				md.setInsertedDt(insertedDt);
-				md.setUpdatedDt(updatedDt);
-				md.setTypeId(typeId);
-				md.setTitle(title);
-				md.setText(text);
-				md.setUrl(url);
-
-				md.setTraName(name);
-
-				list.add(md);
+				list.add(hm);
 			}
 		}
-		catch(Exception ex)
-		{
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawerList(): " + ex);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".selectDrawerList(): ", e);
 		}
-		finally
-		{
+		finally {
+			cur.close();
 		}
 
-		return list;
+		// Convert the hashmap to a JSON string
+		JSONArray joPayload = new JSONArray(list);
+
+		String listJson = joPayload.toString();
+
+		return listJson;
 	}
 
-	public Drawer selectMemberDrawer(
-		Connection argCon,
-		String argTraSk)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+	public String selectDrawerListByTraId(
+		HttpServletRequest request, HashMap<String,String> args) {
 
-		Drawer md = new Drawer();
+		MongoCursor<Document> cur = null;
 
-		try
-		{
-			String sql = 
-				"SELECT a.drw_sk, " +
-				 "a.mbr_sk, " + 
-				 "tra_sk, " + 
-				 "to_char(a.inserted_dt, 'MM/DD/YYYY') as inserted_dt, " +
-				 "to_char(a.updated_dt, 'MM/DD/YYYY') as updated_dt, " +
-				 "a.type_id, " + 
-				 "a.title, " + 
-				 "a.text, " + 
-				 "a.url, " +
-				 "b.name " +
-				"FROM member_drawer a, " +
-				 "member_tray b " +
-				"WHERE (tra_sk = CAST(? AS integer)) AND " +
-				 "a.tra_sk = b.tra_sk)";
+		int rowCount = 0;
 
-			ps = argCon.prepareStatement(sql);
+		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
-			ps.setString(1, argTraSk);
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
-			rs = ps.executeQuery();
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			// Process the resultset
-			while (rs.next())
-			{
-				String drwSk = rs.getString("drw_sk");
-				String mbrSk = rs.getString("mbr_sk");
-				String traSk = rs.getString("tra_sk");
-				String insertedDt = rs.getString("inserted_dt");
-				String updatedDt = rs.getString("updated_dt");
-				String typeId = rs.getString("type_id");
-				String title = rs.getString("title");
-				String text = rs.getString("text");
-				String url = rs.getString("url");
-				String name = rs.getString("name");
+			cur = collection.find().iterator();
 
-				md.setDrwSk(drwSk);
-				md.setMbrSk(mbrSk);
-				md.setTraSk(traSk);
-				md.setInsertedDt(insertedDt);
-				md.setUpdatedDt(updatedDt);
-				md.setTypeId(typeId);
-				md.setTitle(title);
-				md.setText(text);
-				md.setUrl(url);
+			while (cur.hasNext()) {
 
-				md.setTraName(name);
+				rowCount++;
+
+				Document document = cur.next();
+
+				String id = (String)document.get("_id").toString();
+				String trayId = (String)document.get("tray-id");
+				String insertedDate = (String)document.get("inserted-date");
+				String updatedDate = (String)document.get("updated-date");
+				String type = (String)document.get("type");
+				String title = (String)document.get("title");
+				String text = (String)document.get("text");
+				String url = (String)document.get("url");
+
+				HashMap<String,String> hm = new HashMap<String,String>();
+
+				hm.put("drawer-id", id);
+				hm.put("tray-id", trayId);
+				hm.put("inserted-date", insertedDate);
+				hm.put("updated-date", updatedDate);
+				hm.put("type", type);
+				hm.put("title", title);
+				hm.put("text", text);
+				hm.put("url", url);
+
+				list.add(hm);
 			}
 		}
-		catch(Exception ex)
+		catch(Exception e)
 		{
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".selectMemberDrawer(): " + ex);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".selectDrawerListByTraId(): ", e);
 		}
-		finally
-		{
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
+		finally {
+			cur.close();
 		}
 
-		return md;
+		// Convert the hashmap to a JSON string
+		JSONArray joPayload = new JSONArray(list);
+
+		String listJson = joPayload.toString();
+
+		return listJson;
 	}
 
-	public int insertMemberDrawer(
-		Connection argCon, 
-		String argMbrSk,
-		String argTraSk,
-		String argTypeId,
-		String argTitle,
-		String argText,
-		String argUrl)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
+	public String selectDrawerListByWildcard(
+		HttpServletRequest request, HashMap<String,String> args) {
+
+		MongoCursor<Document> cur = null;
+
+		int rowCount = 0;
+
+		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+		try {
+			String searchTerm = "%" + args.get("searchTerm").toLowerCase() + "%";
+
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
+
+			cur = collection.find().iterator();
+
+			while (cur.hasNext()) {
+
+				rowCount++;
+
+				Document document = cur.next();
+
+				String id = (String)document.get("_id").toString();
+				String trayId = (String)document.get("tray-id");
+				String insertedDate = (String)document.get("inserted-date");
+				String updatedDate = (String)document.get("updated-date");
+				String type = (String)document.get("type");
+				String title = (String)document.get("title");
+				String text = (String)document.get("text");
+				String url = (String)document.get("url");
+
+				HashMap<String,String> hm = new HashMap<String,String>();
+
+				hm.put("drawer-id", id);
+				hm.put("tray-id", trayId);
+				hm.put("inserted-date", insertedDate);
+				hm.put("updated-date", updatedDate);
+				hm.put("type", type);
+				hm.put("title", title);
+				hm.put("text", text);
+				hm.put("url", url);
+
+				list.add(hm);
+			}
+		}
+		catch(Exception e)
+		{
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".selectDrawerListByWildcard(): ", e);
+		}
+		finally {
+			cur.close();
+		}
+
+		// Convert the hashmap to a JSON string
+		JSONArray joPayload = new JSONArray(list);
+
+		String listJson = joPayload.toString();
+
+		return listJson;
+	}
+
+	public HashMap<String,String> selectDrawer(HttpServletRequest request, HashMap<String,String> args) {
+
+		MongoCursor<Document> cur = null;
+
+		HashMap<String,String> hm = new HashMap<String,String>();
+
+		int rowCount = 0;
+
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
+
+			Document query = 
+				new Document("_id", new Document("$eq", new ObjectId(args.get("drawer-id"))));
+
+			cur = collection.find(query).iterator();
+
+			while (cur.hasNext()) {
+
+				rowCount++;
+
+				Document document = cur.next();
+
+				String id = (String)document.get("_id").toString();
+				String trayId = (String)document.get("tray-id");
+				String insertedDate = (String)document.get("inserted-date");
+				String updatedDate = (String)document.get("updated-date");
+				String type = (String)document.get("type");
+				String title = (String)document.get("title");
+				String text = (String)document.get("text");
+				String url = (String)document.get("url");
+
+				hm.put("drawer-id", id);
+				hm.put("tray-id", trayId);
+				hm.put("inserted-date", insertedDate);
+				hm.put("updated-date", updatedDate);
+				hm.put("type", type);
+				hm.put("title", title);
+				hm.put("text", text);
+				hm.put("url", url);
+			}
+		}
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".selectDrawer(): ", e);
+		}
+		finally {
+			cur.close();
+		}
+
+		return hm;
+	}
+
+	public int insertDrawer(HttpServletRequest request, HashMap<String,String> args) {
 
 		int statusCd = 0;
 
-		try
-		{
-			String sql = 
-				"INSERT INTO member_drawer " +
-				"(mbr_sk, " +
-				 "tra_sk, " +
-				 "inserted_dt, " +
-				 "updated_dt, " +
-				 "type_id, " +
-				 "title, " +
-				 "text, " +
-				 "url) " +
-				"VALUES " + 
-				"(CAST(? AS integer), " +
-				 "CAST(? AS integer), " +
-				 "CURRENT_TIMESTAMP, " + 
-				 "CURRENT_TIMESTAMP, " +
-				 "CAST(? AS integer), " +
-				 "?, " +
-				 "?, " +
-				 "?)";
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
-			ps = argCon.prepareStatement(sql);
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			// Set the parms
-			ps.setString(1, argMbrSk);
-			ps.setString(2, argTraSk);
-			ps.setString(3, argTypeId);
-			ps.setString(4, argTitle);
-			ps.setString(5, argText);
-			ps.setString(6, argUrl);
+			Document doc = new Document();
 
-			ps.executeUpdate();
+			doc.append("tray-id", args.get("tray-id"));
+			doc.append("inserted-date", args.get("inserted-date"));
+			doc.append("updated-date", args.get("updated-date"));
+			doc.append("type", args.get("type"));
+			doc.append("title", args.get("title"));
+			doc.append("text", args.get("text"));
+			doc.append("url", args.get("url"));
+
+			collection.insertOne(doc);
 		} 
-		catch(Exception ex)
-		{
+		catch(Exception e) {
 			statusCd = -1;
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".insertMemberDrawer(): " + ex);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".insertDrawer(): ", e);
 		}
-		finally
-		{
-			if (ps != null) ps.close();
-		}
+		finally {}
 
 		return statusCd;
 	}
 
-	public int updateMemberDrawer(
-		Connection argCon, 
-		String argDrwSk,
-		String argTraSk,
-		String argTitle,
-		String argText,
-		String argUrl)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
+	public int updateDrawer(HttpServletRequest request, HashMap<String,String> args) {
 
 		int statusCd = 0;
 
-		try
-		{
-			String sql = 
-				"UPDATE member_drawer " +
-				"SET tra_sk = CAST(? AS integer), " +
-				 "title = ?, " +
-				 "text = ?, " +
-				 "url = ? " +
-				"WHERE (drw_sk = CAST(? AS integer))";
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
-			ps = argCon.prepareStatement(sql);
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			// Set the parms
-			ps.setString(1, argTraSk);
-			ps.setString(2, argTitle);
-			ps.setString(3, argText);
-			ps.setString(4, argUrl);
-			ps.setString(5, argDrwSk);
-
-			ps.executeUpdate();
+			collection.replaceOne(
+				eq("_id", new ObjectId(args.get("drawer-id"))),
+					new Document("tray-id", args.get("tray-id"))
+						.append("title", args.get("title"))
+						.append("text", args.get("text"))
+						.append("url", args.get("url")));
 		} 
-		catch(Exception ex)
-		{
+		catch(Exception e) {
 			statusCd = -1;
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".updateMemberDrawer(): " + ex);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".updateDrawer(): ", e);
 		}
-		finally
-		{
-			if (ps != null) ps.close();
-		}
-			return statusCd;
+		finally {}
+
+		return statusCd;
 	}
 
-	public int deleteMemberDrawer(
-		Connection argCon, 
-		String argDrwSk)
-			throws SQLException
-	{
-		PreparedStatement ps = null;
+	public int deleteDrawer(HttpServletRequest request, HashMap<String,String> args) {
 
 		int statusCd = 0;
 
-		try
-		{
-			String sql = 
-				"DELETE FROM member_drawer " +
-				"WHERE (drw_sk = CAST(? AS integer))";
+		try {
+			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
 
-			ps = argCon.prepareStatement(sql);
+			MongoCollection<Document> collection = 
+				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			// Set the parms
-			ps.setString(1, argDrwSk);
-
-			ps.executeUpdate();
+			collection.deleteOne(eq("_id", new ObjectId(args.get("drawer-id"))));
 		} 
-		catch(Exception ex)
-		{
+		catch(Exception e) {
 			statusCd = -1;
-			System.out.println("EXCEPTION: " + this.getClass().getName() + ".deleteMemberDrawer(): " + ex);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".deleteDrawer(): ", e);
 		}
-		finally
-		{
-			if (ps != null) ps.close();
-		}
-			return statusCd;
+		finally {}
+
+		return statusCd;
 	}
 
 }

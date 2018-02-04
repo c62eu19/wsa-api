@@ -20,7 +20,7 @@ public class DbUser {
 
 	private static final Logger logger = Logger.getLogger(DbUser.class.getName());
 
-	public HashMap<String,String> selectMemberSignin(
+	public HashMap<String,String> selectUserSignin(
 		HttpServletRequest request, String argEmail, String argEncryptedPword) {
 
 		MongoCursor<Document> cur = null;
@@ -68,7 +68,7 @@ public class DbUser {
 		catch(Exception e) {
 			hm.put("statusInd","E");
 			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".selectMemberSignin(): ", e);
+				Level.SEVERE, this.getClass().getName() + ".selectUserSignin(): ", e);
 		}
 		finally {
 			cur.close();
@@ -136,7 +136,7 @@ public class DbUser {
 		return statusCd;
 	}
 
-	public int updateMemberSignin(HttpServletRequest request, String id) 
+	public int updateUserSignin(HttpServletRequest request, String id) 
 	{
 
 		int statusCd = 0;
@@ -156,14 +156,14 @@ public class DbUser {
 		{
 			statusCd = -1;
 			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".updateMemberSignin(): ", e);
+				Level.SEVERE, this.getClass().getName() + ".updateUserSignin(): ", e);
 		}
 		finally {}
 
 		return statusCd;
 	}
 
-	public int updateMemberPassword(
+	public int updateUserPassword(
 		HttpServletRequest request, String id, String encryptedPassword) {
 
 		int statusCd = 0;
@@ -181,14 +181,14 @@ public class DbUser {
 		{
 			statusCd = -1;
 			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".updateMemberPassword(): ", e);
+				Level.SEVERE, this.getClass().getName() + ".updateUserPassword(): ", e);
 		}
 		finally {}
 
 		return statusCd;
 	}
 
-	public int updateMemberStatusInd(
+	public int updateUserStatusInd(
 		HttpServletRequest request, String id, String statusInd) {
 
 		int statusCd = 0;
@@ -206,7 +206,7 @@ public class DbUser {
 		{
 			statusCd = -1;
 			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".updateMemberStatusInd(): ", e);
+				Level.SEVERE, this.getClass().getName() + ".updateUserStatusInd(): ", e);
 		}
 		finally {}
 

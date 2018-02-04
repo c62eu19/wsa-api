@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,25 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.mediator.DrawerMediator;
+import com.mydrawer.db.DbDrawer;
 import com.mydrawer.util.Security;
 
-@WebServlet(name = "memberdrawerentryws",urlPatterns = {"/memberdrawerentryws/*"})
-public class DrawerEntryWS extends HttpServlet
-{
+@WebServlet(name = "Drawer Entry",urlPatterns = {"/DrawerEntry/*"})
+
+public class DrawerEntryWS extends HttpServlet {
+
 	private static final long serialVersionUID = 2857847752169838915L;
 
-	protected void doPost(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	private static final Logger logger = Logger.getLogger(DrawerEntryWS.class.getName());
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
@@ -39,48 +42,43 @@ public class DrawerEntryWS extends HttpServlet
 			jo = jo.getJSONObject("inputArgs");
 
 			// Token that identifies a member
-			String mbrSkToken = jo.get("mbrSkToken").toString();
-			String traSk = jo.get("traSk").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
+			String traId = jo.get("traId").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
 			String url = jo.get("url").toString();
-			String typeId = jo.get("typeId").toString();
+			String type = jo.get("type").toString();
 
-			Security s = new Security();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt the mbrSkToken
-			String mbrSk = s.decrypt(mbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("tray-id", traId);
+			args.put("title", title);
+			args.put("text", text);
+			args.put("url", url);
+			args.put("type", type);
 
-			// Add the new post
-			DrawerMediator mds = new DrawerMediator();
+			DbDrawer dbDrawer = new DbDrawer();
 
-			mds.addMemberDrawer(
-				request,
-				mbrSk,
-				traSk,
-				typeId,
-				title,
-				text,
-				url);
+			int statusCd = dbDrawer.insertDrawer(request, args);
 
-			String mbrDrawerJson = 
-				mds.getMemberDrawerListByMbrSk(request, mbrSk);
+			String drawerJson = dbDrawer.selectDrawerList(request, args);
 
-			out.println(mbrDrawerJson);
+			out.println(drawerJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPost(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
 	}
 
-	protected void doPut(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		BufferedReader br = null;
@@ -88,8 +86,7 @@ public class DrawerEntryWS extends HttpServlet
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			isr = new InputStreamReader(request.getInputStream());
 	        br = new BufferedReader(isr);
 
@@ -100,47 +97,52 @@ public class DrawerEntryWS extends HttpServlet
 			jo = jo.getJSONObject("inputArgs");
 
 			// Token that identifies a member
-			String mbrSkToken = jo.get("mbrSkToken").toString();
-			String drwSk = jo.get("drwSk").toString();
-			String traSk = jo.get("traSk").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
+			String drwId = jo.get("drwSk").toString();
+			String traId = jo.get("traSk").toString();
 			String url = jo.get("url").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
 
-			Security s = new Security();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt the mbrSkToken
-			String mbrSk = s.decrypt(mbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("drawer-id", drwId);
+			args.put("tray-id", traId);
+			args.put("title", title);
+			args.put("text", text);
+			args.put("url", url);
 
-			// Add the new post
-			DrawerMediator mds = new DrawerMediator();
+			DbDrawer dbDrawer = new DbDrawer();
 
-			int statusCd = 
-				mds.updateMemberDrawer(request, drwSk, traSk, title, text, url);
+			int statusCd = dbDrawer.updateDrawer(request, args);
 
-			String mbrDrawerJson = 
-				mds.getMemberDrawerListByMbrSk(request, mbrSk);
+			String drawerJson = dbDrawer.selectDrawerList(request, args);
 
-			out.println(mbrDrawerJson);
+			out.println(drawerJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPut(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPut(): ", e);
 		}
-		finally
-		{
-			if(isr != null) isr.close();
-			if(br != null) br.close();
+		finally {
+			if(isr != null) {
+				isr.close();
+			}
+
+			if(br != null) {
+				br.close();
+			}
 		}
 	}
 
-	protected void doDelete(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		BufferedReader br = null;
@@ -148,8 +150,7 @@ public class DrawerEntryWS extends HttpServlet
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			isr = new InputStreamReader(request.getInputStream());
 	        br = new BufferedReader(isr);
 
@@ -159,34 +160,38 @@ public class DrawerEntryWS extends HttpServlet
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String mbrSkToken = jo.get("mbrSkToken").toString();
-			String drwSk = jo.get("drwSk").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
+			String drwId = jo.get("drwId").toString();
 
-			Security s = new Security();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt and parse out the mbrSkToken
-			String mbrSk = s.decrypt(mbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("drawer-id", drwId);
 
-			DrawerMediator mds = new DrawerMediator();
+			DbDrawer dbDrawer = new DbDrawer();
 
-			int statusCd = 
-				mds.deleteMemberDrawer(request, drwSk);
+			int statusCd = dbDrawer.deleteDrawer(request, args);
 
-			String mbrDrawerJson = 
-				mds.getMemberDrawerListByMbrSk(request, mbrSk);
+			String drawerJson = dbDrawer.selectDrawerList(request, args);
 
-			out.println(mbrDrawerJson);
+			out.println(drawerJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doDelete(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doDelete(): ", e);
 		}
-		finally
-		{
-			if(isr != null) isr.close();
-			if(br != null) br.close();
+		finally {
+			if(isr != null) {
+				isr.close();
+			}
+
+			if(br != null) {
+				br.close();
+			}
 		}
 	}
 

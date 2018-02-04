@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.mydrawer.db.DbTray;
 import com.mydrawer.util.Security;
 
 @WebServlet(name = "Tray",urlPatterns = {"/Tray/*"})
@@ -21,6 +24,8 @@ import com.mydrawer.util.Security;
 public class TrayWS extends HttpServlet {
 
 	private static final long serialVersionUID = 2857847752169838915L;
+
+	private static final Logger logger = Logger.getLogger(TrayWS.class.getName());
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
@@ -30,23 +35,26 @@ public class TrayWS extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		try {
-			String encryptedCollectionName = request.getPathInfo();
+			String pathInfo = request.getPathInfo();
 
 			// Exclude the beginning / of the query param
+			String encryptedCollectionName = pathInfo.substring(1, pathInfo.length());
+
+			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				encryptedCollectionName.substring(1, encryptedCollectionName.length());
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt encrypted collection
-			String collectionName = new Security().decryptCollectionName(decryptedCollectionName);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
 
-			String mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
+			String trayJson = new DbTray().selectTrayList(request, args);
 
-			out.println(mbrTrayJson);
+			out.println(trayJson);
 			out.flush();
 		}
 		catch(Exception e) {
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doGet(): " + e);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
 		}
 	}
 
@@ -64,23 +72,27 @@ public class TrayWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String collectionName = jo.get("collectionName").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
 			String name = jo.getString("name").toString();
 
-			// Decrypt the mbrSkToken
-			String mbrSk = new Security().decryptCollectionName(collectionName);
+			// Decrypt the token
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			TrayMediator mts = new TrayMediator();
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("tray-name", name);
 
-			int statusCd = 
-				mts.addMemberTray(request, mbrSk, name);
+			DbTray dbTray = new DbTray();
+
+			int statusCd = dbTray.insertTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e) {
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPost(): " + e);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
 		}
 	}
 
@@ -104,25 +116,29 @@ public class TrayWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String mbrSkToken = jo.get("mbrSkToken").toString();
-			String traSk = jo.get("traSk").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
+			String id = jo.get("id").toString();
 			String name = jo.getString("name").toString();
 
-			Security s = new Security();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt the mbrSkToken
-			String mbrSk = s.decrypt(mbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("id", id);
+			args.put("tray-name", name);
 
-			TrayMediator mts = new TrayMediator();
+			DbTray dbTray = new DbTray();
 
-			int statusCd = mts.updateMemberTray(request, traSk, name);
+			int statusCd = dbTray.updateTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e) {
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPut(): " + e);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPut(): ", e);
 		}
 		finally {
 			if(isr != null) {
@@ -155,25 +171,27 @@ public class TrayWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String mbrSkToken = jo.get("mbrSkToken").toString();
-			String traSk = jo.get("traSk").toString();
+			String encryptedCollectionName = jo.get("encryptedCollectionName").toString();
+			String id = jo.get("id").toString();
 
-			Security s = new Security();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt and parse out the mbrSkToken
-			String decryptedMbrSkToken = s.decrypt(mbrSkToken);
-			String mbrSk = decryptedMbrSkToken.split("[|]")[0];
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
+			args.put("id", id);
 
-			TrayMediator mts = new TrayMediator();
+			DbTray dbTray = new DbTray();
 
-			int statusCd = mts.deleteMemberTray(request, traSk);
+			int statusCd = dbTray.deleteTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
 		}
 		catch(Exception e) {
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doDelete(): " + e);
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doDelete(): ", e);
 		}
 		finally {
 			if(isr != null) {

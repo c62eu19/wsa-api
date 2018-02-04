@@ -3,6 +3,8 @@ package com.mydrawer.webservice;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,26 +14,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.mediator.DrawerMediator;
-import com.mydrawer.obj.Media;
 import com.mydrawer.util.URLUtility;
 
-@WebServlet(name = "urlpartsws",urlPatterns = {"/urlpartsws/*"})
-public class UrlPartsWS extends HttpServlet
-{
+@WebServlet(name = "urlpartsws",urlPatterns = {"/UrlParts/*"})
+public class UrlPartsWS extends HttpServlet {
+
 	private static final long serialVersionUID = 2857847752169838915L;
 
-	protected void doPost(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	private static final Logger logger = Logger.getLogger(UrlPartsWS.class.getName());
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
@@ -50,11 +49,7 @@ public class UrlPartsWS extends HttpServlet
 
 			String mediaType = "";
 
-			if(statusCd.equals("0"))
-			{
-				Media media = new Media();
-
-				DrawerMediator sf = new DrawerMediator();
+			if(statusCd.equals("0")) {
 
 				// Default to ARTICLE unless it's a video
 				mediaType = "ARTICLE";
@@ -70,8 +65,8 @@ public class UrlPartsWS extends HttpServlet
 				if(host.matches("(?i).*vimeo.*")) videoType = "VIMEO";
 				if(host.matches("(?i).*ted.*")) videoType = "TED";
 
-				if(videoType.equals("YOUTUBE") || videoType.equals("VIMEO") || videoType.equals("TED"))
-				{
+				if(videoType.equals("YOUTUBE") || videoType.equals("VIMEO") || videoType.equals("TED")) {
+
 					String userAgent = 
 						(String)request.getHeader("User-Agent");
 					if(userAgent == null) userAgent = "";
@@ -94,10 +89,9 @@ public class UrlPartsWS extends HttpServlet
 			out.println(jsonResponse);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPost(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
 	}
 

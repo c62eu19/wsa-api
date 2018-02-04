@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.mydrawer.db.DbDrawer;
+import com.mydrawer.db.DbTray;
 import com.mydrawer.db.DbUser;
-import com.mydrawer.mediator.DrawerMediator;
-
+import com.mydrawer.exception.InvalidSigninException;
+import com.mydrawer.exception.InvalidSignupException;
 import com.mydrawer.util.Security;
 
 @WebServlet(name = "Signin",urlPatterns = {"/Signin/*"})
@@ -44,45 +46,55 @@ public class SignInWS extends HttpServlet {
 
 			// Encrypt the password
 			String encryptedPword = security.encryptPword(email, password);
- 
+
 			DbUser dbUser = new DbUser();
 
 			// Sign the user in
-			HashMap<String,String> hm =
-				dbUser.selectMemberSignin(request, email, encryptedPword);
+			HashMap<String,String> hm = dbUser.selectUserSignin(request, email, encryptedPword);
 
 			String statusInd = "";
 
-			String mbrSk = "";
-			String mbrSkToken = "";
-			String mbrTrayJson = "";
-			String mbrDrawerJson = "";
-
 			statusInd = hm.get("status-ind");
 
-			// Check the member's status
-			if(statusInd.equalsIgnoreCase("A")) {
-				String id = hm.get("id");
-
-				dbUser.updateMemberSignin(request, id);
-
-				// Encrypt the mbrSk
-//				mbrSkToken = ms.encryptMbrSk(mbrSk);
-
-//				mbrTrayJson = mts.getMemberTrayList(request, mbrSk);
-
-				DrawerMediator mds = new DrawerMediator();
-
-				mbrDrawerJson = mds.getMemberDrawerListByMbrSk(request, mbrSk);
-			}
-			else
-			{
-				// Other problem with Sign in
-				statusInd = "E";
+			// Check the user's status
+			if(statusInd.equalsIgnoreCase("E")) {
+				throw new InvalidSigninException(
+					"We apologize but there is an problem with your Sign in. " +
+					"Please try again and if the problem persists then please send us a message " +
+					"by clicking Contact Us from the Hamburger menu above.");
 			}
 
-//			this.sendResponse(
-//				request, response, statusInd, statusMsg, collectionName, userName, trayJson, drawerJson);
+			String id = hm.get("id");
+
+			dbUser.updateUserSignin(request, id);
+
+			String collectionName = hm.get("collection-name");
+
+			// Encrypt the collection name and use as the security token for all service calls
+			String encryptedCollectionName = 
+				new Security().encryptCollectionName(collectionName);
+
+			// Get the user's trays
+			HashMap<String,String> trayArgs = new HashMap<String,String>();
+			trayArgs.put("collection-name", collectionName);
+
+			String trayJson = new DbTray().selectTrayList(request, trayArgs);
+
+			// Get the user's drawer
+			HashMap<String,String> drawerArgs = new HashMap<String,String>();
+			drawerArgs.put("collection-name", collectionName);
+
+			String drawerJson = new DbDrawer().selectDrawerList(request, drawerArgs);
+
+			this.sendResponse(
+				request, response, statusInd, "", collectionName, hm.get("user-name"), trayJson, drawerJson);
+		}
+		catch(InvalidSignupException e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
+
+			this.sendResponse(
+				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
 		}
 		catch(Exception e)
 		{
@@ -111,12 +123,12 @@ public class SignInWS extends HttpServlet {
 		try {
 			HashMap<String,String> hm = new HashMap<String,String>();
 
-			hm.put("statusInd", statusInd);
-			hm.put("statusMsg", statusMsg);
-			hm.put("collectioName", collectionName);
-			hm.put("userName", userName);
-			hm.put("trayJson", trayJson);
-			hm.put("drawerJson", drawerJson);
+			hm.put("status-ind", statusInd);
+			hm.put("status-msg", statusMsg);
+			hm.put("collectio-name", collectionName);
+			hm.put("user-name", userName);
+			hm.put("tray-json", trayJson);
+			hm.put("drawer-json", drawerJson);
 
 			// Convert the hashmap to a JSON string
 			JSONObject joPayload = new JSONObject(hm);

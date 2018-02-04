@@ -133,25 +133,17 @@ public class Security {
 
 		Security ee = new Security();
 
-		String email = "c62eu19@gmail.com";
-		String mbrSk = "2";
+		String value = "c62eu19gmailcom";
 
 		// Salt the password before encrypting
 //		String saltedValue = email.trim() + ee.getSalt() + mbrSk.trim();
-		String saltedValue = mbrSk.trim();
+		String saltedValue = value.trim();
 		String encryptedValue = ee.encrypt(saltedValue);
-
-		System.out.println(encryptedValue);
 
 		String decryptedValue = ee.decrypt(encryptedValue);
 
-		System.out.println("Decrypted Text : " + decryptedValue);
-
-		String[] mbrSkTokens = decryptedValue.split("[|]");
-		
-System.out.println(mbrSkTokens[0]);
-System.out.println(mbrSkTokens[1]);
-System.out.println(mbrSkTokens[2]);
+		System.out.println(
+			"input: " + value + " --> encrypted: " + encryptedValue + " --> decrypted: " + decryptedValue);
 
 	}
 

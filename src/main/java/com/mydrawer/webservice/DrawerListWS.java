@@ -3,6 +3,8 @@ package com.mydrawer.webservice;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,62 +14,56 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.mydrawer.mediator.DrawerMediator;
-import com.mydrawer.mediator.UserMediator;
+import com.mydrawer.db.DbDrawer;
+import com.mydrawer.util.Security;
 
-@WebServlet(name = "MemberDrawerList",urlPatterns = {"/MemberDrawerList/*"})
+@WebServlet(name = "DrawerList",urlPatterns = {"/DrawerList/*"})
 
-public class DrawerListWS extends HttpServlet
-{
+public class DrawerListWS extends HttpServlet {
+
 	private static final long serialVersionUID = 2857847752169838915L;
 
-	protected void doGet(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	private static final Logger logger = Logger.getLogger(DrawerListWS.class.getName());
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
-			String mbrSkToken = request.getPathInfo();
+		try {
+			String pathInfo = request.getPathInfo();
 
 			// Exclude the beginning / of the query param
-			String newMbrSkToken = mbrSkToken.substring(1, mbrSkToken.length());
+			String encryptedCollectionName = pathInfo.substring(1, pathInfo.length());
 
-			UserMediator ms = new UserMediator();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt mbrSk encrypted token
-			String mbrSk = ms.decryptMbrSk(newMbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
 
-			DrawerMediator mts = new DrawerMediator();
+			String drawerJson = new DbDrawer().selectDrawerList(request, args);
 
-			String mbrDrawerJson = 
-				mts.getMemberDrawerListByMbrSk(request, mbrSk);
-
-			out.println(mbrDrawerJson);
+			out.println(drawerJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doGet(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
 		}
 	}
 
-	protected void doPost(
-		HttpServletRequest request, 
-		HttpServletResponse response) 
-			throws ServletException, IOException
-	{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 
-		try
-		{
+		try {
 			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
@@ -75,46 +71,40 @@ public class DrawerListWS extends HttpServlet
 			jo = jo.getJSONObject("inputArgs");
 
 			String searchType = jo.get("searchType").toString();
-			String mbrSkToken = jo.get("mbrSkToken").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
 			String searchTerm = jo.getString("searchTerm").toString();
-			String traSk = jo.getString("traSk").toString();
+			String traId = jo.getString("traId").toString();
 
-			UserMediator ms = new UserMediator();
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().encryptCollectionName(encryptedCollectionName);
 
-			// Decrypt mbrSk encrypted token
-			String mbrSk = ms.decryptMbrSk(mbrSkToken);
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collection-name", decryptedCollectionName);
 
-			DrawerMediator mds = new DrawerMediator();
+			String drawerJson = "";
 
-			String mbrDrawerJson = "";
+			DbDrawer dbDrawer = new DbDrawer();
 
-			if(searchType.equalsIgnoreCase("WILDCARD"))
-			{
+			if(searchType.equalsIgnoreCase("WILDCARD")) {
+
 				// If an empty searchTerm is entered then get the member's drawer
-				if(searchTerm == null || searchTerm.equals(""))
-				{
-					mbrDrawerJson = 
-						mds.getMemberDrawerListByMbrSk(request, mbrSk);
+				if(searchTerm == null || searchTerm.equals("")) {
+					drawerJson = dbDrawer.selectDrawerList(request, args);
+
+				} else {
+					drawerJson = dbDrawer.selectDrawerListByWildcard(request, args);
 				}
-				else
-				{
-					mbrDrawerJson = 
-						mds.getMemberDrawerListByWildcard(request, mbrSk, searchTerm);
-				}
-			}
-			else
-			{
-				mbrDrawerJson = 
-					mds.getMemberDrawerListByTraSk(request, mbrSk, traSk);
+			} else {
+				drawerJson = dbDrawer.selectDrawerListByTraId(request, args);
 			}
 
-			out.println(mbrDrawerJson);
+			out.println(drawerJson);
 			out.flush();
 		}
-		catch(Exception e)
-		{
-			System.out.println(
-				"EXCEPTION: " + this.getClass().getName() + ".doPost(): " + e);
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
 	}
 
