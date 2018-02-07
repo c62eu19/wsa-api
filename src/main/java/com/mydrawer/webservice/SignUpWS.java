@@ -12,8 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bson.Document;
 import org.json.JSONObject;
 
+import com.mongodb.client.MongoCollection;
+import com.mydrawer.db.DbDrawer;
+import com.mydrawer.db.DbMongo;
 import com.mydrawer.db.DbTray;
 import com.mydrawer.db.DbUser;
 import com.mydrawer.exception.InvalidSignupException;
@@ -33,7 +37,7 @@ public class SignUpWS extends HttpServlet {
 		throws ServletException, IOException {
 
 		try {
-			String inputJSON = "";
+			String inputJSON = request.getParameter("inputJSON");
 
 			JSONObject jo;
 			jo = new JSONObject(inputJSON);
@@ -52,7 +56,7 @@ public class SignUpWS extends HttpServlet {
 			}
 
 			// Check if this user is already in the system
-			if(dbUser.selectUserCount(request, email) <= 0) {
+			if(dbUser.selectUserCount(request, email) > 0) {
 				throw new InvalidSignupException(
 					"This email is already registered. Please choose another email or sign in.");
 			}
@@ -89,16 +93,16 @@ public class SignUpWS extends HttpServlet {
 					"by clicking Contact Us from the Hamburger menu above.");
 			}
 
-			// Add a default tray for the member
-			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", collectionName);
-			args.put("tray-name", "Favorites");
+			// Create a Tray collection and add a default tray for the member
+			String trayName = DbMongo.getTrayCollectionName(collectionName);
+			DbMongo.createCollection(request.getServletContext(), trayName);
 
-			new DbTray().insertTray(request, args);
+			// Create a Drawer collection for the member
+			String drawerName = DbMongo.getDrawerCollectionName(collectionName);
+			DbMongo.createCollection(request.getServletContext(), drawerName);
 
 			// Encrypt the collection name and use as the security token for all service calls
-			String encryptedCollectionName = 
-				new Security().encryptCollectionName(collectionName);
+			String encryptedCollectionName = new Security().encryptCollectionName(collectionName);
 
 			String trayJson = "";
 			String drawerJson = "";
@@ -142,12 +146,12 @@ public class SignUpWS extends HttpServlet {
 		try {
 			HashMap<String,String> hm = new HashMap<String,String>();
 
-			hm.put("status-ind", statusInd);
-			hm.put("status-msg", statusMsg);
-			hm.put("collection-name", collectionName);
-			hm.put("user-name", userName);
-			hm.put("tray-json", trayJson);
-			hm.put("drawer-json", drawerJson);
+			hm.put("statusInd", statusInd);
+			hm.put("statusMsg", statusMsg);
+			hm.put("collectionName", collectionName);
+			hm.put("userName", userName);
+			hm.put("trayJson", trayJson);
+			hm.put("drawerJson", drawerJson);
 
 			// Convert the hashmap to a JSON string
 			JSONObject joPayload = new JSONObject(hm);

@@ -34,7 +34,7 @@ public class DbTray {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			cur = collection.find().iterator();
+	        cur = collection.find().iterator();
 
 			while (cur.hasNext()) {
 

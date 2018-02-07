@@ -28,10 +28,10 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			cur = collection.find().iterator();
 
@@ -90,10 +90,10 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			cur = collection.find().iterator();
 
@@ -155,10 +155,10 @@ public class DbDrawer {
 		try {
 			String searchTerm = "%" + args.get("searchTerm").toLowerCase() + "%";
 
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			cur = collection.find().iterator();
 
@@ -217,10 +217,10 @@ public class DbDrawer {
 		int rowCount = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			Document query = 
 				new Document("_id", new Document("$eq", new ObjectId(args.get("drawer-id"))));
@@ -268,10 +268,10 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			Document doc = new Document();
 
@@ -300,10 +300,10 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			collection.replaceOne(
 				eq("_id", new ObjectId(args.get("drawer-id"))),
@@ -327,10 +327,10 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), trayName);
+				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			collection.deleteOne(eq("_id", new ObjectId(args.get("drawer-id"))));
 		} 

@@ -1,5 +1,6 @@
 package com.mydrawer.db;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mydrawer.util.DateUtility;
@@ -136,9 +138,8 @@ public class DbUser {
 		return statusCd;
 	}
 
-	public int updateUserSignin(HttpServletRequest request, String id) 
+	public int updateUserSignin(HttpServletRequest request, String id, String loginCount) 
 	{
-
 		int statusCd = 0;
 
 		try
@@ -146,11 +147,16 @@ public class DbUser {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), "col_users");
 
-			collection.replaceOne(eq(
+			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
-					new Document("last-login-date", DateUtility.getCurrentDateTime())
-						.append("login-count", "1"));
+					new Document("$set", new Document("last-login-date", DateUtility.getCurrentDateTime())));
 
+			// Increment the login count
+			int newLoginCount = Integer.parseInt(loginCount) + 1;
+
+			collection.updateOne(eq(
+				"_id", new ObjectId(id)),
+					new Document("$set", new Document("login-count", String.valueOf(newLoginCount))));
 		}
 		catch(Exception e)
 		{

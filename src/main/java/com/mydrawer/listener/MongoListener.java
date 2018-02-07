@@ -8,13 +8,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import org.bson.Document;
-
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mydrawer.db.DbMongo;
-import com.mydrawer.webservice.SignUpWS;
 
 @WebListener
 public class MongoListener implements ServletContextListener {
@@ -28,18 +23,14 @@ public class MongoListener implements ServletContextListener {
 			logger.log(Level.INFO, "MongoListener(): contextInitialized()");
 
 			// Get a handle to the servlet context
+			MongoClient mongoClient = DbMongo.createMongoClient();
+
 			ServletContext ctx = sce.getServletContext();
 
-			/*
-			 * This method creates a: 
-			 * 		MongoClient
-			 * 		db_drawers database
-			 * 		col_users collection
-			 */
-			DbMongo.getCollection(ctx, "col_users");
+			// Set the Mongo Client to the Servlet context
+			ctx.setAttribute("MONGO-CLIENT", mongoClient);
+
 			logger.log(Level.INFO, "MongoListener(): MongoClient created");
-			logger.log(Level.INFO, "MongoListener(): MongoDatabase: db_drawers created");
-			logger.log(Level.INFO, "MongoListener(): Mongo Collection: col_users created");
 
 			logger.log(Level.INFO, "MongoClient initialized()");
 		}

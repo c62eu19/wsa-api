@@ -20,27 +20,21 @@ public class DbMongo
 {
 	private static final Logger logger = Logger.getLogger(DbMongo.class.getName());
 
-	public static MongoCollection<Document> getCollection(
-		ServletContext ctx, String collectionName) {
+	public static MongoClient createMongoClient() {
 
-		MongoCollection<Document> collection = null;
+		MongoClient mongoClient = null;
 
+		
 		try {
-			// Check if we have a valid Mongo Client in the ServletContext
-			MongoClient mongoClient = getMongoClient(ctx);
-
-			// Get our database
-			MongoDatabase database = getDatabase(mongoClient);
-
-			// Get the collection. It automatically gets created if it doesn't exist
-			collection = database.getCollection(collectionName);
+			// Create the Mongo Db Client
+			mongoClient = new MongoClient("localhost",27017);
 		}
 		catch(Exception e) {
 			logger.log(
-				Level.SEVERE, "DbMongo.getCollection(): ", e);
+				Level.SEVERE, "DbMongo.createMongoClient(): ", e);
 		}
 
-		return collection;
+		return mongoClient;
 	}
 
 	private static MongoClient getMongoClient(ServletContext ctx) {
@@ -69,19 +63,49 @@ public class DbMongo
 		return mongoClient;
 	}
 
-	private static MongoDatabase getDatabase(MongoClient mongoClient) {
+	public static int createCollection(
+		ServletContext ctx, String collectionName) {
 
-		MongoDatabase database = null;
+		int statusCd = 0;
 
 		try {
-			database = mongoClient.getDatabase("db_drawers");
+			// Check if we have a valid Mongo Client in the ServletContext
+			MongoClient mongoClient = getMongoClient(ctx);
+
+			MongoDatabase database = mongoClient.getDatabase("db_drawers");
+
+			// Get the collection. It automatically gets created if it doesn't exist
+			database.createCollection(collectionName);
+		}
+		catch(Exception e) {
+			statusCd = -1;
+			logger.log(
+				Level.SEVERE, "DbMongo.getCollection(): ", e);
+		}
+
+		return statusCd;
+	}
+
+	public static MongoCollection<Document> getCollection(
+		ServletContext ctx, String collectionName) {
+
+		MongoCollection<Document> collection = null;
+
+		try {
+			// Check if we have a valid Mongo Client in the ServletContext
+			MongoClient mongoClient = getMongoClient(ctx);
+
+			MongoDatabase database = mongoClient.getDatabase("db_drawers");
+
+			// Get the collection. It automatically gets created if it doesn't exist
+			collection = database.getCollection(collectionName);
 		}
 		catch(Exception e) {
 			logger.log(
-				Level.SEVERE, "DbMongo.getDatabase(): ", e);
+				Level.SEVERE, "DbMongo.getCollection(): ", e);
 		}
 
-		return database;
+		return collection;
 	}
 
 	public static String getTrayCollectionName(String collectionName) {

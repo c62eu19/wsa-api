@@ -65,8 +65,9 @@ public class SignInWS extends HttpServlet {
 			}
 
 			String id = hm.get("id");
+			String loginCount = hm.get("login-count");
 
-			dbUser.updateUserSignin(request, id);
+			dbUser.updateUserSignin(request, id, loginCount);
 
 			String collectionName = hm.get("collection-name");
 
@@ -123,12 +124,12 @@ public class SignInWS extends HttpServlet {
 		try {
 			HashMap<String,String> hm = new HashMap<String,String>();
 
-			hm.put("status-ind", statusInd);
-			hm.put("status-msg", statusMsg);
-			hm.put("collectio-name", collectionName);
-			hm.put("user-name", userName);
-			hm.put("tray-json", trayJson);
-			hm.put("drawer-json", drawerJson);
+			hm.put("statusInd", statusInd);
+			hm.put("statusMsg", statusMsg);
+			hm.put("collectionName", collectionName);
+			hm.put("userName", userName);
+			hm.put("trayJson", trayJson);
+			hm.put("drawerJson", drawerJson);
 
 			// Convert the hashmap to a JSON string
 			JSONObject joPayload = new JSONObject(hm);
