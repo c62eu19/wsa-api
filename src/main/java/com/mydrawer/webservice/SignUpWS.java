@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bson.Document;
 import org.json.JSONObject;
 
-import com.mongodb.client.MongoCollection;
-import com.mydrawer.db.DbDrawer;
 import com.mydrawer.db.DbMongo;
 import com.mydrawer.db.DbTray;
 import com.mydrawer.db.DbUser;
@@ -104,6 +101,14 @@ public class SignUpWS extends HttpServlet {
 			// Encrypt the collection name and use as the security token for all service calls
 			String encryptedCollectionName = new Security().encryptCollectionName(collectionName);
 
+			// Add a default Favorites tray for the user
+			HashMap<String,String> trayArgs = new HashMap<String,String>();
+
+			trayArgs.put("collectionName",trayName);
+			trayArgs.put("trayName", "Favorites");
+
+			new DbTray().insertTray(request, trayArgs);
+
 			String trayJson = "";
 			String drawerJson = "";
 
@@ -111,9 +116,6 @@ public class SignUpWS extends HttpServlet {
 				request, response, "A", "Ok", encryptedCollectionName, name, trayJson, drawerJson); 
 		}
 		catch(InvalidSignupException e) {
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
-
 			this.sendResponse(
 				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
 		}

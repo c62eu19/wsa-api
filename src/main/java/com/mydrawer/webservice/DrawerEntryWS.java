@@ -43,7 +43,7 @@ public class DrawerEntryWS extends HttpServlet {
 
 			// Token that identifies a member
 			String encryptedCollectionName = jo.get("collectionName").toString();
-			String traId = jo.get("traId").toString();
+			String trayId = jo.get("trayId").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
 			String url = jo.get("url").toString();
@@ -54,8 +54,8 @@ public class DrawerEntryWS extends HttpServlet {
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("tray-id", traId);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayId", trayId);
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
@@ -98,8 +98,8 @@ public class DrawerEntryWS extends HttpServlet {
 
 			// Token that identifies a member
 			String encryptedCollectionName = jo.get("collectionName").toString();
-			String drwId = jo.get("drwSk").toString();
-			String traId = jo.get("traSk").toString();
+			String drawerId = jo.get("drawerId").toString();
+			String trayId = jo.get("trayId").toString();
 			String url = jo.get("url").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
@@ -109,9 +109,9 @@ public class DrawerEntryWS extends HttpServlet {
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("drawer-id", drwId);
-			args.put("tray-id", traId);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("drawerId", drawerId);
+			args.put("trayId", trayId);
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
@@ -161,15 +161,15 @@ public class DrawerEntryWS extends HttpServlet {
 			jo = jo.getJSONObject("inputArgs");
 
 			String encryptedCollectionName = jo.get("collectionName").toString();
-			String drwId = jo.get("drwId").toString();
+			String drawerId = jo.get("drawerId").toString();
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("drawer-id", drwId);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("drawerId", drawerId);
 
 			DbDrawer dbDrawer = new DbDrawer();
 

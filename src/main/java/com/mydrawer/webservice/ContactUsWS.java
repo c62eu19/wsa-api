@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import com.mydrawer.db.DbContactUs;
 import com.mydrawer.util.DateUtility;
 
-@WebServlet(name = "contactusws",urlPatterns = {"/contactusws/*"})
+@WebServlet(name = "Contactus",urlPatterns = {"/ContactUs/*"})
 public class ContactUsWS extends HttpServlet {
 
 	private static final long serialVersionUID = 2857847752169838915L;
@@ -39,15 +39,15 @@ public class ContactUsWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String email = jo.get("msgFrom").toString();
-			String subject = jo.get("msgSubj").toString();
-			String message = jo.get("msg").toString();
+			String email = jo.get("email").toString();
+			String subject = jo.get("subject").toString();
+			String message = jo.get("message").toString();
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("email",email);
 			args.put("subject",subject);
 			args.put("message",message);
-			args.put("inserted-date", DateUtility.getCurrentDateTime());
+			args.put("insertedDate", DateUtility.getCurrentDateTime());
 
 			// Add the new user and create their drawer
 			int statusCd = new DbContactUs().insertContactUs(request, args);

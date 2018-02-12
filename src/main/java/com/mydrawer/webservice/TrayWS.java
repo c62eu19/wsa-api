@@ -45,7 +45,7 @@ public class TrayWS extends HttpServlet {
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
+			args.put("collectionName", decryptedCollectionName);
 
 			String trayJson = new DbTray().selectTrayList(request, args);
 
@@ -73,15 +73,15 @@ public class TrayWS extends HttpServlet {
 			jo = jo.getJSONObject("inputArgs");
 
 			String encryptedCollectionName = jo.get("collectionName").toString();
-			String name = jo.getString("name").toString();
+			String trayName = jo.getString("trayName").toString();
 
 			// Decrypt the token
 			String decryptedCollectionName = 
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("tray-name", name);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayName", trayName);
 
 			DbTray dbTray = new DbTray();
 
@@ -117,17 +117,17 @@ public class TrayWS extends HttpServlet {
 			jo = jo.getJSONObject("inputArgs");
 
 			String encryptedCollectionName = jo.get("collectionName").toString();
-			String id = jo.get("id").toString();
-			String name = jo.getString("name").toString();
+			String trayId = jo.get("trayId").toString();
+			String trayName = jo.getString("trayName").toString();
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("id", id);
-			args.put("tray-name", name);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayId", trayId);
+			args.put("trayName", trayName);
 
 			DbTray dbTray = new DbTray();
 
@@ -171,16 +171,16 @@ public class TrayWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String encryptedCollectionName = jo.get("encryptedCollectionName").toString();
-			String id = jo.get("id").toString();
+			String encryptedCollectionName = jo.get("collectionName").toString();
+			String trayId = jo.get("trayId").toString();
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
 				new Security().encryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("id", id);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayId", trayId);
 
 			DbTray dbTray = new DbTray();
 

@@ -29,7 +29,7 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
@@ -43,12 +43,12 @@ public class DbTray {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String name = (String)document.get("tray-name");
+				String name = (String)document.get("tray_name");
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
-				hm.put("id", id);
-				hm.put("tray-name", name);
+				hm.put("trayId", id);
+				hm.put("trayName", name);
 
 				list.add(hm);
 			}
@@ -81,13 +81,13 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
 			Document query = 
-				new Document("_id", new Document("$eq", new ObjectId(args.get("id"))));
+				new Document("_id", new Document("$eq", new ObjectId(args.get("trayId"))));
 
 			cur = collection.find(query).iterator();
 
@@ -98,10 +98,10 @@ public class DbTray {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String name = (String)document.get("tray-name");
+				String name = (String)document.get("tray_name");
 
-				hm.put("id", id);
-				hm.put("tray-name", name);
+				hm.put("trayId", id);
+				hm.put("trayName", name);
 			}
 		}
 		catch(Exception e)
@@ -122,14 +122,14 @@ public class DbTray {
 
 		try
 		{
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
 			Document doc = new Document();
 
-			doc.append("tray-name", args.get("tray-name"));
+			doc.append("tray_name", args.get("trayName"));
 
 			collection.insertOne(doc);
 		} 
@@ -149,15 +149,15 @@ public class DbTray {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
 			collection.replaceOne(eq(
-				"_id", new ObjectId(args.get("id"))),
-					new Document("tray-name", args.get("tray-name")));
-		} 
+				"_id", new ObjectId(args.get("trayId"))),
+					new Document("tray_name", args.get("trayName")));
+		}
 		catch(Exception e)
 		{
 			statusCd = -1;
@@ -173,12 +173,12 @@ public class DbTray {
 		int statusCd = 0;
 
 		try {
-			String trayName = DbMongo.getTrayCollectionName(args.get("collection-name"));
+			String trayName = DbMongo.getTrayCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			collection.deleteOne(eq("_id", new ObjectId(args.get("id"))));
+			collection.deleteOne(eq("_id", new ObjectId(args.get("trayId"))));
 		} 
 		catch(Exception e)
 		{

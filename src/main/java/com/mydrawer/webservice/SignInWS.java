@@ -54,7 +54,7 @@ public class SignInWS extends HttpServlet {
 
 			String statusInd = "";
 
-			statusInd = hm.get("status-ind");
+			statusInd = hm.get("statusInd");
 
 			// Check the user's status
 			if(statusInd.equalsIgnoreCase("E")) {
@@ -65,11 +65,11 @@ public class SignInWS extends HttpServlet {
 			}
 
 			String id = hm.get("id");
-			String loginCount = hm.get("login-count");
+			String loginCount = hm.get("loginCount");
 
 			dbUser.updateUserSignin(request, id, loginCount);
 
-			String collectionName = hm.get("collection-name");
+			String collectionName = hm.get("collectionName");
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String encryptedCollectionName = 
@@ -77,18 +77,18 @@ public class SignInWS extends HttpServlet {
 
 			// Get the user's trays
 			HashMap<String,String> trayArgs = new HashMap<String,String>();
-			trayArgs.put("collection-name", collectionName);
+			trayArgs.put("collectionName", collectionName);
 
 			String trayJson = new DbTray().selectTrayList(request, trayArgs);
 
 			// Get the user's drawer
 			HashMap<String,String> drawerArgs = new HashMap<String,String>();
-			drawerArgs.put("collection-name", collectionName);
+			drawerArgs.put("collectionName", collectionName);
 
 			String drawerJson = new DbDrawer().selectDrawerList(request, drawerArgs);
 
 			this.sendResponse(
-				request, response, statusInd, "", collectionName, hm.get("user-name"), trayJson, drawerJson);
+				request, response, statusInd, "", encryptedCollectionName, hm.get("userName"), trayJson, drawerJson);
 		}
 		catch(InvalidSignupException e) {
 			logger.log(

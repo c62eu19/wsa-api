@@ -7,14 +7,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mydrawer.util.DateUtility;
-
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
 
 public class DbContactUs {
 
@@ -26,14 +20,14 @@ public class DbContactUs {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_contact-us");
+				DbMongo.getCollection(request.getServletContext(), "col_contact_us");
 
 			Document doc = new Document();
 
 			doc.append("email", args.get("email"));
 			doc.append("subject", args.get("subject"));
 			doc.append("message", args.get("message"));
-			doc.append("inserted-date", args.get("inserted-date"));
+			doc.append("inserted_date", args.get("insertedDate"));
 
 			collection.insertOne(doc);
 		}

@@ -28,7 +28,7 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
@@ -42,9 +42,9 @@ public class DbDrawer {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray-id");
-				String insertedDate = (String)document.get("inserted-date");
-				String updatedDate = (String)document.get("updated-date");
+				String trayId = (String)document.get("tray_id");
+				String insertedDate = (String)document.get("inserted_date");
+				String updatedDate = (String)document.get("updated_date");
 				String type = (String)document.get("type");
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
@@ -52,10 +52,10 @@ public class DbDrawer {
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
-				hm.put("drawer-id", id);
-				hm.put("tray-id", trayId);
-				hm.put("inserted-date", insertedDate);
-				hm.put("updated-date", updatedDate);
+				hm.put("drawerId", id);
+				hm.put("trayId", trayId);
+				hm.put("insertedDate", insertedDate);
+				hm.put("updatedDate", updatedDate);
 				hm.put("type", type);
 				hm.put("title", title);
 				hm.put("text", text);
@@ -90,7 +90,7 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
@@ -104,9 +104,9 @@ public class DbDrawer {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray-id");
-				String insertedDate = (String)document.get("inserted-date");
-				String updatedDate = (String)document.get("updated-date");
+				String trayId = (String)document.get("tray_id");
+				String insertedDate = (String)document.get("inserted_date");
+				String updatedDate = (String)document.get("updated_date");
 				String type = (String)document.get("type");
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
@@ -114,10 +114,10 @@ public class DbDrawer {
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
-				hm.put("drawer-id", id);
-				hm.put("tray-id", trayId);
-				hm.put("inserted-date", insertedDate);
-				hm.put("updated-date", updatedDate);
+				hm.put("drawerId", id);
+				hm.put("trayId", trayId);
+				hm.put("insertedDate", insertedDate);
+				hm.put("updatedDate", updatedDate);
 				hm.put("type", type);
 				hm.put("title", title);
 				hm.put("text", text);
@@ -155,7 +155,7 @@ public class DbDrawer {
 		try {
 			String searchTerm = "%" + args.get("searchTerm").toLowerCase() + "%";
 
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
@@ -169,9 +169,9 @@ public class DbDrawer {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray-id");
-				String insertedDate = (String)document.get("inserted-date");
-				String updatedDate = (String)document.get("updated-date");
+				String trayId = (String)document.get("tray_id");
+				String insertedDate = (String)document.get("inserted_date");
+				String updatedDate = (String)document.get("updated_date");
 				String type = (String)document.get("type");
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
@@ -179,10 +179,10 @@ public class DbDrawer {
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
-				hm.put("drawer-id", id);
-				hm.put("tray-id", trayId);
-				hm.put("inserted-date", insertedDate);
-				hm.put("updated-date", updatedDate);
+				hm.put("drawerId", id);
+				hm.put("trayId", trayId);
+				hm.put("insertedDate", insertedDate);
+				hm.put("updatedDate", updatedDate);
 				hm.put("type", type);
 				hm.put("title", title);
 				hm.put("text", text);
@@ -217,13 +217,13 @@ public class DbDrawer {
 		int rowCount = 0;
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			Document query = 
-				new Document("_id", new Document("$eq", new ObjectId(args.get("drawer-id"))));
+				new Document("_id", new Document("$eq", new ObjectId(args.get("drawerId"))));
 
 			cur = collection.find(query).iterator();
 
@@ -234,18 +234,18 @@ public class DbDrawer {
 				Document document = cur.next();
 
 				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray-id");
-				String insertedDate = (String)document.get("inserted-date");
-				String updatedDate = (String)document.get("updated-date");
+				String trayId = (String)document.get("tray_id");
+				String insertedDate = (String)document.get("inserted_date");
+				String updatedDate = (String)document.get("updated_date");
 				String type = (String)document.get("type");
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
 				String url = (String)document.get("url");
 
-				hm.put("drawer-id", id);
-				hm.put("tray-id", trayId);
-				hm.put("inserted-date", insertedDate);
-				hm.put("updated-date", updatedDate);
+				hm.put("drawerId", id);
+				hm.put("trayId", trayId);
+				hm.put("insertedDate", insertedDate);
+				hm.put("updatedDate", updatedDate);
 				hm.put("type", type);
 				hm.put("title", title);
 				hm.put("text", text);
@@ -268,16 +268,16 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			Document doc = new Document();
 
-			doc.append("tray-id", args.get("tray-id"));
-			doc.append("inserted-date", args.get("inserted-date"));
-			doc.append("updated-date", args.get("updated-date"));
+			doc.append("tray_id", args.get("trayId"));
+			doc.append("inserted_date", args.get("insertedDate"));
+			doc.append("updated_date", args.get("updatedDate"));
 			doc.append("type", args.get("type"));
 			doc.append("title", args.get("title"));
 			doc.append("text", args.get("text"));
@@ -300,14 +300,14 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
 			collection.replaceOne(
-				eq("_id", new ObjectId(args.get("drawer-id"))),
-					new Document("tray-id", args.get("tray-id"))
+				eq("_id", new ObjectId(args.get("drawerId"))),
+					new Document("tray-id", args.get("trayId"))
 						.append("title", args.get("title"))
 						.append("text", args.get("text"))
 						.append("url", args.get("url")));
@@ -327,13 +327,13 @@ public class DbDrawer {
 		int statusCd = 0;
 
 		try {
-			String drawerName = DbMongo.getDrawerCollectionName(args.get("collection-name"));
+			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
-			collection.deleteOne(eq("_id", new ObjectId(args.get("drawer-id"))));
-		} 
+			collection.deleteOne(eq("_id", new ObjectId(args.get("drawerId"))));
+		}
 		catch(Exception e) {
 			statusCd = -1;
 			logger.log(

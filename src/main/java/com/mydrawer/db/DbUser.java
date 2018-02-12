@@ -47,24 +47,24 @@ public class DbUser {
 				String id = (String)document.get("_id").toString();
 				String email = (String)document.get("email");
 				String password = (String)document.get("password");
-				String name = (String)document.get("user-name");
-				String collectionName = (String)document.get("collection-name");
-				String registrationDt = (String)document.get("registration-date");
-				String lastLoginDt = (String)document.get("last-login-date");
-				String loginCnt = (String)document.get("login-count");
-				String statusInd = (String)document.get("status-ind");
+				String name = (String)document.get("user_name");
+				String collectionName = (String)document.get("collection_name");
+				String registrationDt = (String)document.get("registration_date");
+				String lastLoginDt = (String)document.get("last_login_date");
+				String loginCnt = (String)document.get("login_count");
+				String statusInd = (String)document.get("status_ind");
 
 				if(name == null) name = "";
 
 				hm.put("id",id);
 				hm.put("email",email);
 				hm.put("password",password);
-				hm.put("user-name",name);
-				hm.put("collection-name",collectionName);
-				hm.put("registration-date",registrationDt);
-				hm.put("last-Login-date",lastLoginDt);
-				hm.put("login-count",loginCnt);
-				hm.put("status-ind",statusInd);
+				hm.put("userName",name);
+				hm.put("collectionName",collectionName);
+				hm.put("registrationDate",registrationDt);
+				hm.put("lastLoginDate",lastLoginDt);
+				hm.put("loginCount",loginCnt);
+				hm.put("statusInd",statusInd);
 			}
 		}
 		catch(Exception e) {
@@ -77,7 +77,7 @@ public class DbUser {
 		}
 
 		if(rowCount <= 0) {
-			hm.put("status-ind","E");
+			hm.put("statusInd","E");
 		}
 
 		return hm;
@@ -120,12 +120,12 @@ public class DbUser {
 
 			doc.append("email", args.get("email"));
 			doc.append("password", args.get("password"));
-			doc.append("user-name", args.get("user-name"));
-			doc.append("collection-name", args.get("collection-name"));
-			doc.append("registration-date", args.get("registration-date"));
-			doc.append("last-login-date", args.get("last-login-date"));
-			doc.append("login-count", args.get("login-count"));
-			doc.append("status-ind", args.get("status-ind"));
+			doc.append("user_name", args.get("userName"));
+			doc.append("collection_name", args.get("collectionName"));
+			doc.append("registration_date", args.get("registrationDate"));
+			doc.append("last_login_date", args.get("lastLoginDate"));
+			doc.append("login_count", args.get("loginCount"));
+			doc.append("status_ind", args.get("statusInd"));
 
 			collection.insertOne(doc);
 		}
@@ -149,14 +149,14 @@ public class DbUser {
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
-					new Document("$set", new Document("last-login-date", DateUtility.getCurrentDateTime())));
+					new Document("$set", new Document("last_login_date", DateUtility.getCurrentDateTime())));
 
 			// Increment the login count
 			int newLoginCount = Integer.parseInt(loginCount) + 1;
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
-					new Document("$set", new Document("login-count", String.valueOf(newLoginCount))));
+					new Document("$set", new Document("login_count", String.valueOf(newLoginCount))));
 		}
 		catch(Exception e)
 		{
@@ -179,9 +179,9 @@ public class DbUser {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), "col_users");
 
-			collection.replaceOne(eq(
+			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
-					new Document("password", encryptedPassword));
+					new Document("$set", new Document("password", encryptedPassword)));
 		} 
 		catch(Exception e)
 		{
@@ -204,10 +204,10 @@ public class DbUser {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), "col_users");
 
-			collection.replaceOne(eq(
+			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
-					new Document("status-ind", statusInd));
-		} 
+					new Document("$set", new Document("status_ind", statusInd)));
+		}
 		catch(Exception e)
 		{
 			statusCd = -1;
