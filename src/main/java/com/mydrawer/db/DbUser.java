@@ -66,6 +66,14 @@ public class DbUser {
 				hm.put("loginCount",loginCnt);
 				hm.put("statusInd",statusInd);
 			}
+
+			// If successful sign in then update the login count
+			if(rowCount > 0) {
+				String id = hm.get("id");
+				String loginCount = hm.get("loginCount");
+
+				this.updateUserSignin(request, id, loginCount);
+			}
 		}
 		catch(Exception e) {
 			hm.put("statusInd","E");

@@ -39,7 +39,7 @@ public class CORSFilter implements Filter {
 		((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "Origin");
 		((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "Accept");
 		((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "X-Requested-With");
-		((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS, HEAD");
+		((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
 		// config.addExposedHeader("Location");
 		// config.addExposedHeader("Content-Location");

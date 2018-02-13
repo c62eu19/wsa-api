@@ -68,17 +68,17 @@ public class SignUpWS extends HttpServlet {
 			String encryptedPword = new Security().encryptPword(email, password);
 
 			// Status of User (Active)
-			String status = "A";
+			String statusInd = "A";
 
 			HashMap<String,String> hm = new HashMap<String,String>();
 			hm.put("email",email);
 			hm.put("password",encryptedPword);
-			hm.put("user-name",name);
-			hm.put("collection-name",collectionName);
-			hm.put("registration-date",DateUtility.getCurrentDateTime());
-			hm.put("last-login-date",DateUtility.getCurrentDateTime());
-			hm.put("login-count","1");
-			hm.put("status-ind",status);
+			hm.put("userName",name);
+			hm.put("collectionName",collectionName);
+			hm.put("registrationDate",DateUtility.getCurrentDateTime());
+			hm.put("lastLoginDate",DateUtility.getCurrentDateTime());
+			hm.put("loginCount","1");
+			hm.put("statusInd",statusInd);
 
 			// Add the new user and create their drawer
 			int statusCd = dbUser.insertUser(request, hm);
@@ -94,13 +94,6 @@ public class SignUpWS extends HttpServlet {
 			String trayName = DbMongo.getTrayCollectionName(collectionName);
 			DbMongo.createCollection(request.getServletContext(), trayName);
 
-			// Create a Drawer collection for the member
-			String drawerName = DbMongo.getDrawerCollectionName(collectionName);
-			DbMongo.createCollection(request.getServletContext(), drawerName);
-
-			// Encrypt the collection name and use as the security token for all service calls
-			String encryptedCollectionName = new Security().encryptCollectionName(collectionName);
-
 			// Add a default Favorites tray for the user
 			HashMap<String,String> trayArgs = new HashMap<String,String>();
 
@@ -108,6 +101,17 @@ public class SignUpWS extends HttpServlet {
 			trayArgs.put("trayName", "Favorites");
 
 			new DbTray().insertTray(request, trayArgs);
+
+			// Create a Drawer collection for the member
+			String drawerName = DbMongo.getDrawerCollectionName(collectionName);
+			DbMongo.createCollection(request.getServletContext(), drawerName);
+
+			// Create an Inbox collection for the member
+			String inboxName = DbMongo.getInboxCollectionName(collectionName);
+			DbMongo.createCollection(request.getServletContext(), inboxName);
+
+			// Encrypt the collection name and use as the security token for all service calls
+			String encryptedCollectionName = new Security().encryptCollectionName(collectionName);
 
 			String trayJson = "";
 			String drawerJson = "";

@@ -47,10 +47,9 @@ public class SignInWS extends HttpServlet {
 			// Encrypt the password
 			String encryptedPword = security.encryptPword(email, password);
 
-			DbUser dbUser = new DbUser();
-
 			// Sign the user in
-			HashMap<String,String> hm = dbUser.selectUserSignin(request, email, encryptedPword);
+			HashMap<String,String> hm = 
+				new DbUser().selectUserSignin(request, email, encryptedPword);
 
 			String statusInd = "";
 
@@ -63,11 +62,6 @@ public class SignInWS extends HttpServlet {
 					"Please try again and if the problem persists then please send us a message " +
 					"by clicking Contact Us from the Hamburger menu above.");
 			}
-
-			String id = hm.get("id");
-			String loginCount = hm.get("loginCount");
-
-			dbUser.updateUserSignin(request, id, loginCount);
 
 			String collectionName = hm.get("collectionName");
 

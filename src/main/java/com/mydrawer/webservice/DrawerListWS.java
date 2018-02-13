@@ -40,7 +40,7 @@ public class DrawerListWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collection-name", decryptedCollectionName);
@@ -77,7 +77,7 @@ public class DrawerListWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collection-name", decryptedCollectionName);

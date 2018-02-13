@@ -144,6 +144,24 @@ public class DbMongo
 		return drawerName;
 	}
 
+	public static String getInboxCollectionName(String collectionName) {
+
+		String inboxName = "";
+
+		try {
+			// Derive the user's drawer collection name from the collection name
+			inboxName = "col_" + collectionName + "_inbox";
+		}
+		catch(Exception e) {
+			inboxName = "";
+			logger.log(
+				Level.SEVERE, "DbMongo.getInboxCollectionName(): ", e);
+		}
+		finally {}
+
+		return inboxName;
+	}
+
 	public int getDocumentCount(
 		MongoCollection<Document> collection, String field, String value) {
 

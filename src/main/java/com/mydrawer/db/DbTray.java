@@ -12,6 +12,7 @@ import org.json.JSONArray;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mydrawer.util.DateUtility;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -154,9 +155,9 @@ public class DbTray {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), trayName);
 
-			collection.replaceOne(eq(
+			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("trayId"))),
-					new Document("tray_name", args.get("trayName")));
+					new Document("$set", new Document("tray_name", args.get("trayName"))));
 		}
 		catch(Exception e)
 		{

@@ -42,7 +42,9 @@ public class TrayWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
+
+			System.out.println(decryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
@@ -77,15 +79,13 @@ public class TrayWS extends HttpServlet {
 
 			// Decrypt the token
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
 			args.put("trayName", trayName);
 
-			DbTray dbTray = new DbTray();
-
-			int statusCd = dbTray.insertTray(request, args);
+			int statusCd = new DbTray().insertTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
@@ -122,16 +122,14 @@ public class TrayWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
 			args.put("trayId", trayId);
 			args.put("trayName", trayName);
 
-			DbTray dbTray = new DbTray();
-
-			int statusCd = dbTray.updateTray(request, args);
+			int statusCd = new DbTray().updateTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();
@@ -176,15 +174,13 @@ public class TrayWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
 			args.put("trayId", trayId);
 
-			DbTray dbTray = new DbTray();
-
-			int statusCd = dbTray.deleteTray(request, args);
+			int statusCd = new DbTray().deleteTray(request, args);
 
 			out.println(Integer.toString(statusCd));
 			out.flush();

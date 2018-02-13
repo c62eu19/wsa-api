@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import com.mydrawer.db.DbDrawer;
+import com.mydrawer.util.DateUtility;
 import com.mydrawer.util.Security;
 
 @WebServlet(name = "Drawer Entry",urlPatterns = {"/DrawerEntry/*"})
@@ -51,7 +52,7 @@ public class DrawerEntryWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
@@ -60,6 +61,8 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("text", text);
 			args.put("url", url);
 			args.put("type", type);
+			args.put("inserted_date",DateUtility.getCurrentDateTime());
+			args.put("updated_date",DateUtility.getCurrentDateTime());
 
 			DbDrawer dbDrawer = new DbDrawer();
 
@@ -106,7 +109,7 @@ public class DrawerEntryWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
@@ -115,6 +118,7 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
+			args.put("updated_date",DateUtility.getCurrentDateTime());
 
 			DbDrawer dbDrawer = new DbDrawer();
 
@@ -165,7 +169,7 @@ public class DrawerEntryWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
