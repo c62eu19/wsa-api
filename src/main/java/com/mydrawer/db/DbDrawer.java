@@ -20,13 +20,12 @@ public class DbDrawer {
 
 	private static final Logger logger = Logger.getLogger(DbDrawer.class.getName());
 
-	public String selectDrawerList(HttpServletRequest request, HashMap<String,String> args) {
+	public ArrayList<HashMap<String,String>> selectDrawerList(
+		HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
 
-		int rowCount = 0;
-
-		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try {
 			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
@@ -36,34 +35,9 @@ public class DbDrawer {
 
 			cur = collection.find().iterator();
 
-			while (cur.hasNext()) {
+			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
-				rowCount++;
-
-				Document document = cur.next();
-
-				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray_id");
-				String insertedDate = (String)document.get("inserted_date");
-				String updatedDate = (String)document.get("updated_date");
-				String type = (String)document.get("type");
-				String title = (String)document.get("title");
-				String text = (String)document.get("text");
-				String url = (String)document.get("url");
-
-				HashMap<String,String> hm = new HashMap<String,String>();
-
-				hm.put("drawerId", id);
-				hm.put("trayId", trayId);
-				hm.put("insertedDate", insertedDate);
-				hm.put("updatedDate", updatedDate);
-				hm.put("type", type);
-				hm.put("title", title);
-				hm.put("text", text);
-				hm.put("url", url);
-
-				list.add(hm);
-			}
+			list = processDrawerList(cur, hmTrays);
 		}
 		catch(Exception e) {
 			logger.log(
@@ -73,22 +47,15 @@ public class DbDrawer {
 			cur.close();
 		}
 
-		// Convert the hashmap to a JSON string
-		JSONArray joPayload = new JSONArray(list);
-
-		String listJson = joPayload.toString();
-
-		return listJson;
+		return list;
 	}
 
-	public String selectDrawerListByTraId(
+	public ArrayList<HashMap<String,String>> selectDrawerListByTraId(
 		HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
 
-		int rowCount = 0;
-
-		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try {
 			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
@@ -98,34 +65,9 @@ public class DbDrawer {
 
 			cur = collection.find().iterator();
 
-			while (cur.hasNext()) {
+			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
-				rowCount++;
-
-				Document document = cur.next();
-
-				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray_id");
-				String insertedDate = (String)document.get("inserted_date");
-				String updatedDate = (String)document.get("updated_date");
-				String type = (String)document.get("type");
-				String title = (String)document.get("title");
-				String text = (String)document.get("text");
-				String url = (String)document.get("url");
-
-				HashMap<String,String> hm = new HashMap<String,String>();
-
-				hm.put("drawerId", id);
-				hm.put("trayId", trayId);
-				hm.put("insertedDate", insertedDate);
-				hm.put("updatedDate", updatedDate);
-				hm.put("type", type);
-				hm.put("title", title);
-				hm.put("text", text);
-				hm.put("url", url);
-
-				list.add(hm);
-			}
+			list = processDrawerList(cur, hmTrays);
 		}
 		catch(Exception e)
 		{
@@ -136,22 +78,15 @@ public class DbDrawer {
 			cur.close();
 		}
 
-		// Convert the hashmap to a JSON string
-		JSONArray joPayload = new JSONArray(list);
-
-		String listJson = joPayload.toString();
-
-		return listJson;
+		return list;
 	}
 
-	public String selectDrawerListByWildcard(
+	public ArrayList<HashMap<String,String>> selectDrawerListByWildcard(
 		HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
 
-		int rowCount = 0;
-
-		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try {
 			String searchTerm = "%" + args.get("searchTerm").toLowerCase() + "%";
@@ -163,34 +98,9 @@ public class DbDrawer {
 
 			cur = collection.find().iterator();
 
-			while (cur.hasNext()) {
+			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
-				rowCount++;
-
-				Document document = cur.next();
-
-				String id = (String)document.get("_id").toString();
-				String trayId = (String)document.get("tray_id");
-				String insertedDate = (String)document.get("inserted_date");
-				String updatedDate = (String)document.get("updated_date");
-				String type = (String)document.get("type");
-				String title = (String)document.get("title");
-				String text = (String)document.get("text");
-				String url = (String)document.get("url");
-
-				HashMap<String,String> hm = new HashMap<String,String>();
-
-				hm.put("drawerId", id);
-				hm.put("trayId", trayId);
-				hm.put("insertedDate", insertedDate);
-				hm.put("updatedDate", updatedDate);
-				hm.put("type", type);
-				hm.put("title", title);
-				hm.put("text", text);
-				hm.put("url", url);
-
-				list.add(hm);
-			}
+			list = processDrawerList(cur, hmTrays);
 		}
 		catch(Exception e)
 		{
@@ -201,17 +111,35 @@ public class DbDrawer {
 			cur.close();
 		}
 
-		// Convert the hashmap to a JSON string
-		JSONArray joPayload = new JSONArray(list);
-
-		String listJson = joPayload.toString();
-
-		return listJson;
+		return list;
 	}
 
-	private String processDrawerList(MongoCursor<Document> cur) {
+	private HashMap<String,String> selectTrayList(
+		HttpServletRequest request, HashMap<String,String> args) {
 
-		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+		HashMap<String,String> hm = new HashMap<>();
+
+		try {
+			ArrayList<HashMap<String,String>> list = 
+				new DbTray().selectTrayList(request, args);
+
+			for(HashMap<String,String> map : list) {
+				hm.put(map.get("trayId"), map.get("trayName"));
+			}
+		}
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".selectTrayList(): ", e);
+		}
+		finally {}
+
+		return hm;
+	}
+
+	private ArrayList<HashMap<String,String>> processDrawerList(
+		MongoCursor<Document> cur, HashMap<String,String> hmTrays) {
+
+		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		int rowCount = 0;
 
@@ -231,12 +159,13 @@ public class DbDrawer {
 				String text = (String)document.get("text");
 				String url = (String)document.get("url");
 
-				// TODO: CREATE MAP OF TRAYS AND MERGE INTO THE LIST
+				String trayName = hmTrays.get(trayId);
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
 				hm.put("drawerId", id);
 				hm.put("trayId", trayId);
+				hm.put("trayName", trayName);
 				hm.put("insertedDate", insertedDate);
 				hm.put("updatedDate", updatedDate);
 				hm.put("type", type);
@@ -251,16 +180,9 @@ public class DbDrawer {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".processDrawerList(): ", e);
 		}
-		finally {
-			cur.close();
-		}
+		finally {}
 
-		// Convert the hashmap to a JSON string
-		JSONArray joPayload = new JSONArray(list);
-
-		String listJson = joPayload.toString();
-
-		return listJson;
+		return list;
 	}
 
 	public HashMap<String,String> selectDrawer(HttpServletRequest request, HashMap<String,String> args) {

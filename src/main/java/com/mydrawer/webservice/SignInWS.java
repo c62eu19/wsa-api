@@ -2,6 +2,7 @@ package com.mydrawer.webservice;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,8 @@ public class SignInWS extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
+
+		WSHelper wsHelper = new WSHelper();
 
 		try {
 			String inputJSON = request.getParameter("inputJSON");
@@ -73,22 +76,26 @@ public class SignInWS extends HttpServlet {
 			HashMap<String,String> trayArgs = new HashMap<String,String>();
 			trayArgs.put("collectionName", collectionName);
 
-			String trayJson = new DbTray().selectTrayList(request, trayArgs);
+			ArrayList<HashMap<String,String>> trayList = 
+				new DbTray().selectTrayList(request, trayArgs);
+			String trayJson = wsHelper.convertPayloadToJson(trayList);
 
 			// Get the user's drawer
 			HashMap<String,String> drawerArgs = new HashMap<String,String>();
 			drawerArgs.put("collectionName", collectionName);
 
-			String drawerJson = new DbDrawer().selectDrawerList(request, drawerArgs);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, drawerArgs);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
-			this.sendResponse(
+			wsHelper.sendResponse(
 				request, response, statusInd, "", encryptedCollectionName, hm.get("userName"), trayJson, drawerJson);
 		}
 		catch(InvalidSignupException e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 
-			this.sendResponse(
+			wsHelper.sendResponse(
 				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
 		}
 		catch(Exception e)
@@ -96,46 +103,6 @@ public class SignInWS extends HttpServlet {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
-	}
-
-	private void sendResponse(
-		HttpServletRequest request, 
-		HttpServletResponse response, 
-		String statusInd,
-		String statusMsg,
-		String collectionName,
-		String userName,
-		String trayJson,
-		String drawerJson) 
-			throws ServletException, IOException {
-
-		response.setContentType("application/json");
-
-		String jsonResponse = "";
-
-		PrintWriter out = response.getWriter();
-
-		try {
-			HashMap<String,String> hm = new HashMap<String,String>();
-
-			hm.put("statusInd", statusInd);
-			hm.put("statusMsg", statusMsg);
-			hm.put("collectionName", collectionName);
-			hm.put("userName", userName);
-			hm.put("trayJson", trayJson);
-			hm.put("drawerJson", drawerJson);
-
-			// Convert the hashmap to a JSON string
-			JSONObject joPayload = new JSONObject(hm);
-			jsonResponse = joPayload.toString();
-		}
-		catch(Exception e) {
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".sendResponse(): ", e);
-		}
-
-		out.println(jsonResponse);
-		out.flush();
 	}
 
 }

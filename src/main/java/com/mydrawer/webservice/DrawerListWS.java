@@ -2,6 +2,7 @@ package com.mydrawer.webservice;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,8 @@ public class DrawerListWS extends HttpServlet {
 
 		response.setContentType("application/json");
 
+		WSHelper wsHelper = new WSHelper();
+
 		PrintWriter out = response.getWriter();
 
 		try {
@@ -43,9 +46,11 @@ public class DrawerListWS extends HttpServlet {
 				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
+			args.put("collectionName", decryptedCollectionName);
 
-			String drawerJson = new DbDrawer().selectDrawerList(request, args);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
 			out.println(drawerJson);
 			out.flush();
@@ -60,6 +65,8 @@ public class DrawerListWS extends HttpServlet {
 		throws ServletException, IOException {
 
 		response.setContentType("application/json");
+
+		WSHelper wsHelper = new WSHelper();
 
 		PrintWriter out = response.getWriter();
 
@@ -80,24 +87,28 @@ public class DrawerListWS extends HttpServlet {
 				new Security().decryptCollectionName(encryptedCollectionName);
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
+			args.put("collectionName", decryptedCollectionName);
 
 			String drawerJson = "";
 
 			DbDrawer dbDrawer = new DbDrawer();
 
+			ArrayList<HashMap<String,String>> drawerList = new ArrayList<>();
+
 			if(searchType.equalsIgnoreCase("WILDCARD")) {
 
 				// If an empty searchTerm is entered then get the member's drawer
 				if(searchTerm == null || searchTerm.equals("")) {
-					drawerJson = dbDrawer.selectDrawerList(request, args);
+					drawerList = new DbDrawer().selectDrawerList(request, args);
 
 				} else {
-					drawerJson = dbDrawer.selectDrawerListByWildcard(request, args);
+//					drawerJson = dbDrawer.selectDrawerListByWildcard(request, args);
 				}
 			} else {
-				drawerJson = dbDrawer.selectDrawerListByTraId(request, args);
+//				drawerJson = dbDrawer.selectDrawerListByTraId(request, args);
 			}
+
+			drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
 			out.println(drawerJson);
 			out.flush();

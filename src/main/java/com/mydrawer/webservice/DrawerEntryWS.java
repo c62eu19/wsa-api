@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +34,8 @@ public class DrawerEntryWS extends HttpServlet {
 
 		response.setContentType("application/json");
 
+		WSHelper wsHelper = new WSHelper();
+
 		PrintWriter out = response.getWriter();
 
 		try {
@@ -61,14 +64,16 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("text", text);
 			args.put("url", url);
 			args.put("type", type);
-			args.put("inserted_date",DateUtility.getCurrentDateTime());
-			args.put("updated_date",DateUtility.getCurrentDateTime());
+			args.put("insertedDate",DateUtility.getCurrentDateTime());
+			args.put("updatedDate",DateUtility.getCurrentDateTime());
 
 			DbDrawer dbDrawer = new DbDrawer();
 
 			int statusCd = dbDrawer.insertDrawer(request, args);
 
-			String drawerJson = dbDrawer.selectDrawerList(request, args);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
 			out.println(drawerJson);
 			out.flush();
@@ -83,6 +88,8 @@ public class DrawerEntryWS extends HttpServlet {
 		throws ServletException, IOException {
 
 		response.setContentType("application/json");
+
+		WSHelper wsHelper = new WSHelper();
 
 		BufferedReader br = null;
 		InputStreamReader isr = null;
@@ -118,13 +125,15 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
-			args.put("updated_date",DateUtility.getCurrentDateTime());
+			args.put("updatedDate",DateUtility.getCurrentDateTime());
 
 			DbDrawer dbDrawer = new DbDrawer();
 
 			int statusCd = dbDrawer.updateDrawer(request, args);
 
-			String drawerJson = dbDrawer.selectDrawerList(request, args);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
 			out.println(drawerJson);
 			out.flush();
@@ -148,6 +157,8 @@ public class DrawerEntryWS extends HttpServlet {
 		throws ServletException, IOException {
 
 		response.setContentType("application/json");
+
+		WSHelper wsHelper = new WSHelper();
 
 		BufferedReader br = null;
 		InputStreamReader isr = null;
@@ -179,7 +190,9 @@ public class DrawerEntryWS extends HttpServlet {
 
 			int statusCd = dbDrawer.deleteDrawer(request, args);
 
-			String drawerJson = dbDrawer.selectDrawerList(request, args);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
 			out.println(drawerJson);
 			out.flush();

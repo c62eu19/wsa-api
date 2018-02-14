@@ -40,6 +40,8 @@ public class ImageEntryWS extends HttpServlet {
 
 		response.setContentType("application/json");
 
+		WSHelper wsHelper = new WSHelper();
+
 		OutputStream os = null;
 
 		PrintWriter out = response.getWriter();
@@ -111,10 +113,11 @@ public class ImageEntryWS extends HttpServlet {
 
 			dbDrawer.insertDrawer(request, args);
 
-			String jsonResponse = 
-				dbDrawer.selectDrawerList(request, args);
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
 
-			out.println(jsonResponse);
+			out.println(drawerJson);
 			out.flush();
 		}
 		catch(Exception e) {

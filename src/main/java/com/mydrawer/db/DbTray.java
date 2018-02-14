@@ -12,7 +12,6 @@ import org.json.JSONArray;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mydrawer.util.DateUtility;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -20,13 +19,14 @@ public class DbTray {
 
 	private static final Logger logger = Logger.getLogger(DbTray.class.getName());
 
-	public String selectTrayList(HttpServletRequest request, HashMap<String,String> args) {
+	public ArrayList<HashMap<String,String>> selectTrayList(
+		HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
 
 		int rowCount = 0;
 
-		ArrayList<HashMap> list = new ArrayList<HashMap>();
+		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try
 		{
@@ -64,12 +64,7 @@ public class DbTray {
 			cur.close();
 		}
 
-		// Convert the hashmap to a JSON string
-		JSONArray joPayload = new JSONArray(list);
-
-		String listJson = joPayload.toString();
-
-		return listJson;
+		return list;
 	}
 
 	public HashMap<String,String> selectTray(HttpServletRequest request, HashMap<String,String> args) {

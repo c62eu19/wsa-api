@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,8 @@ public class TrayWS extends HttpServlet {
 
 		response.setContentType("application/json");
 
+		WSHelper wsHelper = new WSHelper();
+
 		PrintWriter out = response.getWriter();
 
 		try {
@@ -44,12 +47,12 @@ public class TrayWS extends HttpServlet {
 			String decryptedCollectionName = 
 				new Security().decryptCollectionName(encryptedCollectionName);
 
-			System.out.println(decryptedCollectionName);
-
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
 
-			String trayJson = new DbTray().selectTrayList(request, args);
+			ArrayList<HashMap<String,String>> trayList = 
+				new DbTray().selectTrayList(request, args);
+			String trayJson = wsHelper.convertPayloadToJson(trayList);
 
 			out.println(trayJson);
 			out.flush();

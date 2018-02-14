@@ -75,7 +75,7 @@ public class UrlPartsWS extends HttpServlet {
 				}
 			}
 
-			HashMap hmPayload = new HashMap();
+			HashMap<String,String> hmPayload = new HashMap<>();
 			hmPayload.put("statusCd", statusCd);
 			hmPayload.put("mediaType", mediaType);
 			hmPayload.put("title", title);
