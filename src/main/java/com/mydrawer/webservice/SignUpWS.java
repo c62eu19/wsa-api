@@ -33,6 +33,8 @@ public class SignUpWS extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
 
+		WSHelper wsHelper = new WSHelper();
+
 		try {
 			String inputJSON = request.getParameter("inputJSON");
 
@@ -116,60 +118,20 @@ public class SignUpWS extends HttpServlet {
 			String trayJson = "";
 			String drawerJson = "";
 
-			this.sendResponse(
+			wsHelper.sendResponse(
 				request, response, "A", "Ok", encryptedCollectionName, name, trayJson, drawerJson); 
 		}
 		catch(InvalidSignupException e) {
-			this.sendResponse(
-				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
+			wsHelper.sendResponse(
+				request, response, "E", e.getMessage(), "", "", "", ""); 
 		}
 		catch(Exception e) {
-			this.sendResponse(
-				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
+			wsHelper.sendResponse(
+				request, response, "E", e.getMessage(), "", "", "", ""); 
 
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
-	}
-
-	private void sendResponse(
-		HttpServletRequest request, 
-		HttpServletResponse response, 
-		String statusInd,
-		String statusMsg,
-		String collectionName,
-		String userName,
-		String trayJson,
-		String drawerJson) 
-			throws ServletException, IOException {
-
-		response.setContentType("application/json");
-
-		String jsonResponse = "";
-
-		PrintWriter out = response.getWriter();
-
-		try {
-			HashMap<String,String> hm = new HashMap<String,String>();
-
-			hm.put("statusInd", statusInd);
-			hm.put("statusMsg", statusMsg);
-			hm.put("collectionName", collectionName);
-			hm.put("userName", userName);
-			hm.put("trayJson", trayJson);
-			hm.put("drawerJson", drawerJson);
-
-			// Convert the hashmap to a JSON string
-			JSONObject joPayload = new JSONObject(hm);
-			jsonResponse = joPayload.toString();
-		}
-		catch(Exception e) {
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".sendResponse(): ", e);
-		}
-
-		out.println(jsonResponse);
-		out.flush();
 	}
 
 }

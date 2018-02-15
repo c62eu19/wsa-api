@@ -91,15 +91,15 @@ public class SignInWS extends HttpServlet {
 			wsHelper.sendResponse(
 				request, response, statusInd, "", encryptedCollectionName, hm.get("userName"), trayJson, drawerJson);
 		}
-		catch(InvalidSignupException e) {
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
-
+		catch(InvalidSigninException e) {
 			wsHelper.sendResponse(
-				request, response, "E", e.getMessage(), "No Collection", "No Name", "No Tray", "No Drawer"); 
+				request, response, "E", e.getMessage(), "", "", "", ""); 
 		}
 		catch(Exception e)
 		{
+			wsHelper.sendResponse(
+				request, response, "E", e.getMessage(), "", "", "", ""); 
+
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
 		}
