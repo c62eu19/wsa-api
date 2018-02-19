@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import com.mydrawer.db.DbContactUs;
 import com.mydrawer.util.DateUtility;
 
-@WebServlet(name = "Contactus",urlPatterns = {"/ContactUs/*"})
+@WebServlet(name = "ContactUs",urlPatterns = {"/ContactUs/*"})
 public class ContactUsWS extends HttpServlet {
 
 	private static final long serialVersionUID = 2857847752169838915L;

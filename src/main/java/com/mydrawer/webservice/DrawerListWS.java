@@ -80,7 +80,7 @@ public class DrawerListWS extends HttpServlet {
 			String searchType = jo.get("searchType").toString();
 			String encryptedCollectionName = jo.get("collectionName").toString();
 			String searchTerm = jo.getString("searchTerm").toString();
-			String traId = jo.getString("traId").toString();
+			String trayId = jo.getString("trayId").toString();
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 

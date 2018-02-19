@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import com.mydrawer.util.URLUtility;
 
-@WebServlet(name = "urlpartsws",urlPatterns = {"/UrlParts/*"})
+@WebServlet(name = "Url Parts",urlPatterns = {"/UrlParts/*"})
 public class UrlPartsWS extends HttpServlet {
 
 	private static final long serialVersionUID = 2857847752169838915L;

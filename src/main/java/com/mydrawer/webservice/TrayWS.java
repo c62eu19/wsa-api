@@ -60,6 +60,9 @@ public class TrayWS extends HttpServlet {
 		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
+
+			out.println("");
+			out.flush();
 		}
 	}
 
@@ -96,6 +99,9 @@ public class TrayWS extends HttpServlet {
 		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
+
+			out.println(-1);
+			out.flush();
 		}
 	}
 
@@ -140,6 +146,9 @@ public class TrayWS extends HttpServlet {
 		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPut(): ", e);
+
+			out.println(-1);
+			out.flush();
 		}
 		finally {
 			if(isr != null) {
@@ -191,6 +200,9 @@ public class TrayWS extends HttpServlet {
 		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doDelete(): ", e);
+
+			out.println(-1);
+			out.flush();
 		}
 		finally {
 			if(isr != null) {

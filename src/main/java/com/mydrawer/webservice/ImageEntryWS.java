@@ -3,24 +3,18 @@ package com.mydrawer.webservice;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.*;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import org.json.JSONObject;
 
@@ -56,7 +50,7 @@ public class ImageEntryWS extends HttpServlet {
 			// Token that identifies a member
 			String encryptedCollectionName = jo.get("collectionName").toString();
 
-			String traId = jo.get("traId").toString();
+			String trayId = jo.get("trayId").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
 			String fileType = jo.get("fileType").toString();
@@ -69,7 +63,7 @@ public class ImageEntryWS extends HttpServlet {
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
-				new Security().encryptCollectionName(encryptedCollectionName);
+				new Security().decryptCollectionName(encryptedCollectionName);
 
 			// Split out the fileType
 			String fileExtension = fileType.split("/")[1];
@@ -104,8 +98,8 @@ public class ImageEntryWS extends HttpServlet {
 			DbDrawer dbDrawer = new DbDrawer();
 
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collection-name", decryptedCollectionName);
-			args.put("tray-id", traId);
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayId", trayId);
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
