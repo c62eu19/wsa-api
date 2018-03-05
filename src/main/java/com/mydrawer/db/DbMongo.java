@@ -189,7 +189,8 @@ public class DbMongo
 		try {
 			MongoCursor<Document> cur = null;
 
-			Document query = new Document("_id", new Document("$eq", new ObjectId(id)));
+			Document query = 
+				new Document("_id", new Document("$eq", new ObjectId(id)));
 			cur = collection.find(query).iterator();
 
 			while (cur.hasNext()) {

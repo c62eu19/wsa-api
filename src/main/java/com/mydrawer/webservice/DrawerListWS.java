@@ -88,6 +88,8 @@ public class DrawerListWS extends HttpServlet {
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", decryptedCollectionName);
+			args.put("searchTerm", searchTerm);
+			args.put("trayId", trayId);
 
 			String drawerJson = "";
 
@@ -102,10 +104,10 @@ public class DrawerListWS extends HttpServlet {
 					drawerList = new DbDrawer().selectDrawerList(request, args);
 
 				} else {
-//					drawerJson = dbDrawer.selectDrawerListByWildcard(request, args);
+					drawerList = dbDrawer.selectDrawerListByWildcard(request, args);
 				}
 			} else {
-//				drawerJson = dbDrawer.selectDrawerListByTraId(request, args);
+				drawerList = dbDrawer.selectDrawerListByTrayId(request, args);
 			}
 
 			drawerJson = wsHelper.convertPayloadToJson(drawerList);

@@ -7,11 +7,12 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.json.JSONArray;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import com.mydrawer.util.DateUtility;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -33,7 +34,7 @@ public class DbDrawer {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
-			cur = collection.find().iterator();
+			cur = collection.find().sort(new Document("updated_date",-1)).iterator();
 
 			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
@@ -50,7 +51,7 @@ public class DbDrawer {
 		return list;
 	}
 
-	public ArrayList<HashMap<String,String>> selectDrawerListByTraId(
+	public ArrayList<HashMap<String,String>> selectDrawerListByTrayId(
 		HttpServletRequest request, HashMap<String,String> args) {
 
 		MongoCursor<Document> cur = null;
@@ -58,21 +59,22 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try {
+			String trayId = args.get("trayId");
+
 			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
-			cur = collection.find().iterator();
+			cur = collection.find(eq("tray_id", trayId)).sort(new Document("updated_date",-1)).iterator();
 
 			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
 			list = processDrawerList(cur, hmTrays);
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".selectDrawerListByTraId(): ", e);
+				Level.SEVERE, this.getClass().getName() + ".selectDrawerListByTrayId(): ", e);
 		}
 		finally {
 			cur.close();
@@ -89,21 +91,25 @@ public class DbDrawer {
 		ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
 		try {
-			String searchTerm = "%" + args.get("searchTerm").toLowerCase() + "%";
+			String searchValue = args.get("searchTerm").toLowerCase();
 
 			String drawerName = DbMongo.getDrawerCollectionName(args.get("collectionName"));
 
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), drawerName);
 
-			cur = collection.find().iterator();
+			Document titleSearch = new Document("$regex",searchValue).append("$options","i");
+			Document textSearch = new Document("$regex",searchValue).append("$options","i");
+
+			Bson filter = Filters.or(Filters.eq("title", titleSearch), Filters.eq("text", textSearch));
+
+			cur = collection.find(filter).sort(new Document("updated_date",-1)).iterator();
 
 			HashMap<String,String> hmTrays = this.selectTrayList(request, args);
 
 			list = processDrawerList(cur, hmTrays);
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".selectDrawerListByWildcard(): ", e);
 		}
