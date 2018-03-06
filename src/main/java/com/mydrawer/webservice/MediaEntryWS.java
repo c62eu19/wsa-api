@@ -19,15 +19,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import com.mydrawer.db.DbDrawer;
+import com.mydrawer.util.DateUtility;
 import com.mydrawer.util.Security;
 
-@WebServlet(name = "Image Entry",urlPatterns = {"/ImageEntry/*"})
+@WebServlet(name = "Media Entry",urlPatterns = {"/MediaEntry/*"})
 
-public class ImageEntryWS extends HttpServlet {
+public class MediaEntryWS extends HttpServlet {
 
 	private static final long serialVersionUID = 2857847752169838915L;
 
-	private static final Logger logger = Logger.getLogger(ImageEntryWS.class.getName());
+	private static final Logger logger = Logger.getLogger(MediaEntryWS.class.getName());
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
@@ -53,6 +54,7 @@ public class ImageEntryWS extends HttpServlet {
 			String trayId = jo.get("trayId").toString();
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
+			String type = jo.get("type").toString();
 			String fileType = jo.get("fileType").toString();
 			String base64Code = jo.get("base64Code").toString();
 
@@ -71,12 +73,13 @@ public class ImageEntryWS extends HttpServlet {
 			String seconds = Long.toString(System.currentTimeMillis());
 
 			// Save the file to the server
-			String fileName = "picture-" + "-" + seconds + "." + fileExtension;
+			String fileName = "image-" + seconds + "." + fileExtension;
 
 			// Convert the base64 String to a byte array
 			byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
-			String filePath = System.getenv("OPENSHIFT_DATA_DIR") + "media/" + fileName;
+//			String filePath = System.getenv("OPENSHIFT_DATA_DIR") + "media/" + fileName;
+			String filePath = "/media/" + fileName;
 
 			File contentFile = new File(filePath);
 
@@ -91,9 +94,6 @@ public class ImageEntryWS extends HttpServlet {
 
 			String url = "/uploads/media/" + fileName;
 
-			// Media
-			String type = "MEDIA";
-
 			// Add the new post
 			DbDrawer dbDrawer = new DbDrawer();
 
@@ -104,6 +104,8 @@ public class ImageEntryWS extends HttpServlet {
 			args.put("text", text);
 			args.put("url", url);
 			args.put("type", type);
+			args.put("insertedDate",DateUtility.getCurrentDateTime());
+			args.put("updatedDate",DateUtility.getCurrentDateTime());
 
 			dbDrawer.insertDrawer(request, args);
 
