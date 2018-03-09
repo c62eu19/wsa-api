@@ -64,6 +64,8 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("text", text);
 			args.put("url", url);
 			args.put("type", type);
+			args.put("mediaType", ".");
+			args.put("mediaBase64", ".");
 			args.put("insertedDate",DateUtility.getCurrentDateTime());
 			args.put("updatedDate",DateUtility.getCurrentDateTime());
 
@@ -125,6 +127,8 @@ public class DrawerEntryWS extends HttpServlet {
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
+			args.put("mediaType", ".");
+			args.put("mediaBase64", ".");
 			args.put("updatedDate",DateUtility.getCurrentDateTime());
 
 			DbDrawer dbDrawer = new DbDrawer();

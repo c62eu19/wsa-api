@@ -55,44 +55,21 @@ public class MediaEntryWS extends HttpServlet {
 			String title = jo.get("title").toString();
 			String text = jo.get("text").toString();
 			String type = jo.get("type").toString();
-			String fileType = jo.get("fileType").toString();
-			String base64Code = jo.get("base64Code").toString();
+			String mediaType = jo.get("mediaType").toString();
+			String mediaBase64 = jo.get("mediaBase64").toString();
 
 			// Split out the data:image/png;base64, from the base64 String
-			String[] base64CommaDelimTokens = base64Code.split(",");
-			String base64Identity = base64CommaDelimTokens[0];
+			String tempBase64 = mediaBase64;
+			String[] base64CommaDelimTokens = tempBase64.split(",");
+
+			mediaType = base64CommaDelimTokens[0];
 			String base64Image = base64CommaDelimTokens[1];
 
 			// Encrypt the collection name and use as the security token for all service calls
 			String decryptedCollectionName = 
 				new Security().decryptCollectionName(encryptedCollectionName);
 
-			// Split out the fileType
-			String fileExtension = fileType.split("/")[1];
-
-			String seconds = Long.toString(System.currentTimeMillis());
-
-			// Save the file to the server
-			String fileName = "image-" + seconds + "." + fileExtension;
-
-			// Convert the base64 String to a byte array
-			byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-
-//			String filePath = System.getenv("OPENSHIFT_DATA_DIR") + "media/" + fileName;
-			String filePath = "/media/" + fileName;
-
-			File contentFile = new File(filePath);
-
-			if(!contentFile.exists()) {
-				contentFile.createNewFile();
-			}
-
-			os = new FileOutputStream(contentFile, false);
-			os.write(imageBytes);
-			os.flush();
-			os.close();
-
-			String url = "/uploads/media/" + fileName;
+			String url = ".";
 
 			// Add the new post
 			DbDrawer dbDrawer = new DbDrawer();
@@ -103,6 +80,8 @@ public class MediaEntryWS extends HttpServlet {
 			args.put("title", title);
 			args.put("text", text);
 			args.put("url", url);
+			args.put("mediaType", mediaType);
+			args.put("mediaBase64", mediaBase64);
 			args.put("type", type);
 			args.put("insertedDate",DateUtility.getCurrentDateTime());
 			args.put("updatedDate",DateUtility.getCurrentDateTime());
@@ -119,6 +98,77 @@ public class MediaEntryWS extends HttpServlet {
 		catch(Exception e) {
 			logger.log(
 				Level.SEVERE, this.getClass().getName() + ".doPost(): ", e);
+		}
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+
+		response.setContentType("application/json");
+
+		WSHelper wsHelper = new WSHelper();
+
+		OutputStream os = null;
+
+		PrintWriter out = response.getWriter();
+
+		try {
+			String inputJSON = request.getParameter("inputJSON");
+
+			JSONObject jo;
+			jo = new JSONObject(inputJSON);
+			jo = jo.getJSONObject("inputArgs");
+
+			// Token that identifies a member
+			String encryptedCollectionName = jo.get("collectionName").toString();
+
+			String trayId = jo.get("trayId").toString();
+			String title = jo.get("title").toString();
+			String text = jo.get("text").toString();
+			String type = jo.get("type").toString();
+			String mediaType = jo.get("mediaType").toString();
+			String mediaBase64 = jo.get("mediaBase64").toString();
+
+			// Split out the data:image/png;base64, from the base64 String
+			String tempBase64 = mediaBase64;
+			String[] base64CommaDelimTokens = tempBase64.split(",");
+
+			mediaType = base64CommaDelimTokens[0];
+			String base64Image = base64CommaDelimTokens[1];
+
+			// Encrypt the collection name and use as the security token for all service calls
+			String decryptedCollectionName = 
+				new Security().decryptCollectionName(encryptedCollectionName);
+
+			String url = ".";
+
+			// Add the new post
+			DbDrawer dbDrawer = new DbDrawer();
+
+			HashMap<String,String> args = new HashMap<String,String>();
+			args.put("collectionName", decryptedCollectionName);
+			args.put("trayId", trayId);
+			args.put("title", title);
+			args.put("text", text);
+			args.put("url", url);
+			args.put("mediaType", mediaType);
+			args.put("mediaBase64", mediaBase64);
+			args.put("type", type);
+			args.put("insertedDate",DateUtility.getCurrentDateTime());
+			args.put("updatedDate",DateUtility.getCurrentDateTime());
+
+			int statusCd = dbDrawer.updateDrawer(request, args);
+
+			ArrayList<HashMap<String,String>> drawerList = 
+				new DbDrawer().selectDrawerList(request, args);
+			String drawerJson = wsHelper.convertPayloadToJson(drawerList);
+
+			out.println(drawerJson);
+			out.flush();
+		}
+		catch(Exception e) {
+			logger.log(
+				Level.SEVERE, this.getClass().getName() + ".doPut(): ", e);
 		}
 	}
 

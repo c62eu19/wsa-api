@@ -164,6 +164,8 @@ public class DbDrawer {
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
 				String url = (String)document.get("url");
+				String mediaType = (String)document.get("media_type");
+				String mediaBase64 = (String)document.get("media_base64");
 
 				String trayName = hmTrays.get(trayId);
 
@@ -178,6 +180,8 @@ public class DbDrawer {
 				hm.put("title", title);
 				hm.put("text", text);
 				hm.put("url", url);
+				hm.put("mediaType", mediaType);
+				hm.put("mediaBase64", mediaBase64);
 
 				list.add(hm);
 			}
@@ -224,6 +228,8 @@ public class DbDrawer {
 				String title = (String)document.get("title");
 				String text = (String)document.get("text");
 				String url = (String)document.get("url");
+				String mediaType = (String)document.get("media_type");
+				String mediaBase64 = (String)document.get("media_base64");
 
 				hm.put("drawerId", id);
 				hm.put("trayId", trayId);
@@ -233,6 +239,8 @@ public class DbDrawer {
 				hm.put("title", title);
 				hm.put("text", text);
 				hm.put("url", url);
+				hm.put("mediaType", mediaType);
+				hm.put("mediaBase64", mediaBase64);
 			}
 		}
 		catch(Exception e) {
@@ -265,6 +273,8 @@ public class DbDrawer {
 			doc.append("title", args.get("title"));
 			doc.append("text", args.get("text"));
 			doc.append("url", args.get("url"));
+			doc.append("media_type", args.get("mediaType"));
+			doc.append("media_base64", args.get("mediaBase64"));
 
 			collection.insertOne(doc);
 		} 
@@ -303,6 +313,14 @@ public class DbDrawer {
 			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("drawerId"))),
 					new Document("$set", new Document("url", args.get("url"))));
+
+			collection.updateOne(eq(
+				"_id", new ObjectId(args.get("drawerId"))),
+					new Document("$set", new Document("media_type", args.get("mediaType"))));
+
+			collection.updateOne(eq(
+				"_id", new ObjectId(args.get("drawerId"))),
+					new Document("$set", new Document("media_base64", args.get("mediaBase64"))));
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("drawerId"))),
