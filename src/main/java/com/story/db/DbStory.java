@@ -41,12 +41,16 @@ public class DbStory {
 
 				String id = (String)document.get("_id").toString();
 				String genre = (String)document.get("genre");
+				String genreMnem = (String)document.get("genre_mnem");
+				String image = (String)document.get("image");
 				int totalStories = (Integer)document.get("total_stories");
 
 				HashMap<String,String> hm = new HashMap<String,String>();
 
 				hm.put("genreId", id);
 				hm.put("genre", genre);
+				hm.put("genreMnem", genreMnem);
+				hm.put("image", image);
 				hm.put("total_stories", Integer.toString(totalStories));
 
 				list.add(hm);
