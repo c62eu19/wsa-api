@@ -36,10 +36,8 @@ public class GenreListWS extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		try {
-			String collectionName = "col_genre";
-
 			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collectionName", collectionName);
+			args.put("collectionName", "col_genre");
 
 			ArrayList<HashMap<String,String>> genreList = 
 				new DbStory().selectGenreList(request, args);

@@ -26,39 +26,6 @@ public class StoryListWS extends HttpServlet {
 
 	private static final Logger logger = Logger.getLogger(StoryListWS.class.getName());
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-		throws ServletException, IOException {
-
-		response.setContentType("application/json");
-
-		WSHelper wsHelper = new WSHelper();
-
-		PrintWriter out = response.getWriter();
-
-		try {
-			String pathInfo = request.getPathInfo();
-
-			// Exclude the beginning / of the query param
-			String genre = pathInfo.substring(1, pathInfo.length());
-
-			String collectionName = "col_" + genre.toLowerCase();
-
-			HashMap<String,String> args = new HashMap<String,String>();
-			args.put("collectionName", collectionName);
-
-			ArrayList<HashMap<String,String>> storyList = 
-				new DbStory().selectStoryList(request, args);
-			String storyJson = wsHelper.convertPayloadToJson(storyList);
-
-			out.println(storyJson);
-			out.flush();
-		}
-		catch(Exception e) {
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".doGet(): ", e);
-		}
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
 
@@ -75,32 +42,16 @@ public class StoryListWS extends HttpServlet {
 			jo = new JSONObject(inputJSON);
 			jo = jo.getJSONObject("inputArgs");
 
-			String searchType = jo.get("searchType").toString();
-			String collectionName = jo.get("collectionName").toString();
-			String searchTerm = jo.getString("searchTerm").toString();
+			String genreMnem = jo.get("genreMnem").toString();
+
+			String collectionName = "col_" + genreMnem.trim().toLowerCase();
 
 			HashMap<String,String> args = new HashMap<String,String>();
 			args.put("collectionName", collectionName);
-			args.put("searchTerm", searchTerm);
 
-			String storyJson = "";
-
-			DbStory dbStory = new DbStory();
-
-			ArrayList<HashMap<String,String>> storyList = new ArrayList<>();
-
-			if(searchType.equalsIgnoreCase("WILDCARD")) {
-
-				// If an empty searchTerm is entered then get the entire story
-				if(searchTerm == null || searchTerm.equals("")) {
-					storyList = new DbStory().selectStoryList(request, args);
-
-				} else {
-					storyList = dbStory.selectStoryListByWildcard(request, args);
-				}
-			}
-
-			storyJson = wsHelper.convertPayloadToJson(storyList);
+			ArrayList<HashMap<String,String>> storyList = 
+				new DbStory().selectStoryList(request, args);
+			String storyJson = wsHelper.convertPayloadToJson(storyList);
 
 			out.println(storyJson);
 			out.flush();

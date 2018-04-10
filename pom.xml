@@ -2,11 +2,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ourstories</groupId>
-	<artifactId>ourstories</artifactId>
+	<groupId>wsa</groupId>
+	<artifactId>wsa</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	<name>ourstories</name>
+	<name>wsa</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +58,7 @@
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift</id>
 			<build>
-				<finalName>ourstories</finalName>
+				<finalName>wsa</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>

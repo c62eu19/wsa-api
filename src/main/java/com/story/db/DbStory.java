@@ -33,7 +33,7 @@ public class DbStory {
 			MongoCollection<Document> collection = 
 				DbMongo.getCollection(request.getServletContext(), "col_genre");
 
-			cur = collection.find().sort(new Document("genre",-1)).iterator();
+			cur = collection.find().sort(new Document("total_stories",-1)).iterator();
 
 			while (cur.hasNext()) {
 
@@ -51,7 +51,7 @@ public class DbStory {
 				hm.put("genre", genre);
 				hm.put("genreMnem", genreMnem);
 				hm.put("image", image);
-				hm.put("total_stories", Integer.toString(totalStories));
+				hm.put("totalStories", Integer.toString(totalStories));
 
 				list.add(hm);
 			}
