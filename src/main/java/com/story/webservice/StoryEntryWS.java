@@ -47,22 +47,22 @@ public class StoryEntryWS extends HttpServlet {
 
 			// Token that identifies a member
 			String genre = jo.get("genre").toString();
+			String genreMnem = jo.get("genreMnem").toString();
 			String createdBy = jo.get("createdBy").toString();
 			String title = jo.get("title").toString();
 			String content = jo.get("content").toString();
-			String originalAncestorId = jo.get("originalAncestorId").toString();
-			String ancestorIdList = jo.get("ancestorIdList").toString();
-			String level = jo.get("level").toString();
+			String originalStoryId = jo.get("originalStoryId").toString();
+			String ancestorStoryIdList = jo.get("ancestorStoryIdList").toString();
 			String comments = jo.get("comments").toString();
 
 			DbStory dbStory = new DbStory();
 
-			// Get collection based on Genre
-			String collectionName = dbStory.getCollectionName(genre);
+			// Get collection based on Genre Mnem
+			String collectionName = "col_" + genreMnem.trim().toLowerCase();
 
 			// Is this a new story or a new branch of an existing story?
-			// If originalAncestorId = 0 then it's a new story
-			// If originalAncestorId is an _id then it's a branch
+			// If originalStoryId = 0 then it's a new story
+			// If originalStoryId is an _id then it's a branch
 
 			HashMap<String,String> args = new HashMap<String,String>();
 
@@ -72,9 +72,8 @@ public class StoryEntryWS extends HttpServlet {
 			args.put("createdBy", createdBy);
 			args.put("createdDate",DateUtility.getCurrentDateTime());
 			args.put("updatedDate",DateUtility.getCurrentDateTime());
-			args.put("originalAncestorId", originalAncestorId);
-			args.put("ancestorIdList", ancestorIdList);
-			args.put("level", level);
+			args.put("originalStoryId", originalStoryId);
+			args.put("ancestorStoryIdList", ancestorStoryIdList);
 			args.put("imageBase64", ".");
 			args.put("likes", "0");
 			args.put("comments", comments);

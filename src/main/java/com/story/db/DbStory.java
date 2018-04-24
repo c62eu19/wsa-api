@@ -4,14 +4,17 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
 import com.story.util.DateUtility;
@@ -31,7 +34,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_genre");
+				new DbMongo().getCollection(request.getServletContext(), "col_genre");
 
 			cur = collection.find().sort(new Document("total_stories",-1)).iterator();
 
@@ -73,7 +76,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_genre");
+					new DbMongo().getCollection(request.getServletContext(), "col_genre");
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("genreId"))),
@@ -98,9 +101,9 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+					new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
-			cur = collection.find().sort(new Document("level",-1)).iterator();
+			cur = collection.find().sort(new Document("created_date",-1)).iterator();
 
 			list = processStoryList(cur);
 		}
@@ -126,13 +129,13 @@ public class DbStory {
 			String searchValue = args.get("searchTerm").toLowerCase();
 
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			Document titleSearch = new Document("$regex",searchValue).append("$options","i");
 
 			Bson filter = Filters.eq("title", titleSearch);
 
-			cur = collection.find(filter).sort(new Document("level",-1)).iterator();
+			cur = collection.find(filter).sort(new Document("created_date",-1)).iterator();
 
 			list = processStoryList(cur);
 		}
@@ -166,9 +169,8 @@ public class DbStory {
 				String createdBy = (String)document.get("created_by");
 				String createdDate = (String)document.get("created_date");
 				String updatedDate = (String)document.get("updated_date");
-				String originalAncestorId = (String)document.get("original_ancestor_id");
-				String ancestorIdList = (String)document.get("ancestor_id_list");
-				String level = (String)document.get("level");
+				String originalStoryId = (String)document.get("original_story_id");
+				String ancestorStoryIdList = (String)document.get("ancestor_story_id_list");
 				String imageBase64 = (String)document.get("image_base64");
 				int likes = (Integer)document.get("likes");
 				String comments = (String)document.get("comments");
@@ -181,9 +183,8 @@ public class DbStory {
 				hm.put("createdBy", createdBy);
 				hm.put("createdDate", createdDate);
 				hm.put("updatedDate", updatedDate);
-				hm.put("originalAncestorId", originalAncestorId);
-				hm.put("ancestorIdList", ancestorIdList);
-				hm.put("level", level);
+				hm.put("originalStoryId", originalStoryId);
+				hm.put("ancestorStoryIdList", ancestorStoryIdList);
 				hm.put("imageBase64", imageBase64);
 				hm.put("likes", Integer.toString(likes));
 				hm.put("comments", comments);
@@ -210,7 +211,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			Document query = 
 				new Document("_id", new Document("$eq", new ObjectId(args.get("storyId"))));
@@ -229,9 +230,8 @@ public class DbStory {
 				String createdBy = (String)document.get("created_by");
 				String createdDate = (String)document.get("created_date");
 				String updatedDate = (String)document.get("updated_date");
-				String originalAncestorId = (String)document.get("original_ancestor_id");
-				String ancestorIdList = (String)document.get("ancestor_id_list");
-				String level = (String)document.get("level");
+				String originalStoryId = (String)document.get("original_story_id");
+				String ancestorStoryIdList = (String)document.get("ancestor_story_id_list");
 				String imageBase64 = (String)document.get("image_base64");
 				int likes = (Integer)document.get("likes");
 				String comments = (String)document.get("comments");
@@ -242,9 +242,8 @@ public class DbStory {
 				hm.put("createdBy", createdBy);
 				hm.put("createdDate", createdDate);
 				hm.put("updatedDate", updatedDate);
-				hm.put("originalAncestorId", originalAncestorId);
-				hm.put("ancestorIdList", ancestorIdList);
-				hm.put("level", level);
+				hm.put("originalStoryId", originalStoryId);
+				hm.put("ancestorStoryIdList", ancestorStoryIdList);
 				hm.put("imageBase64", imageBase64);
 				hm.put("likes", Integer.toString(likes));
 				hm.put("comments", comments);
@@ -267,7 +266,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			Document doc = new Document();
 
@@ -276,9 +275,8 @@ public class DbStory {
 			doc.append("created_by", args.get("createdBy"));
 			doc.append("created_date", args.get("createdDate"));
 			doc.append("updated_date", args.get("updatedDate"));
-			doc.append("original_ancestor_id", args.get("originalAncestorId"));
-			doc.append("ancestor_id_list", args.get("ancestorIdList"));
-			doc.append("level", args.get("level"));
+			doc.append("original_story_id", args.get("originalStoryId"));
+			doc.append("ancestor_story_id_list", args.get("ancestorStoryIdList"));
 			doc.append("image_base64", args.get("imageBase64"));
 			doc.append("likes", Integer.parseInt(args.get("likes")));
 			doc.append("comments", args.get("comments"));
@@ -301,7 +299,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("storyId"))),
@@ -335,7 +333,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			collection.deleteOne(eq("_id", new ObjectId(args.get("storyId"))));
 		}
@@ -355,7 +353,7 @@ public class DbStory {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), args.get("collectionName"));
+				new DbMongo().getCollection(request.getServletContext(), args.get("collectionName"));
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(args.get("storyId"))),
@@ -369,58 +367,6 @@ public class DbStory {
 		finally {}
 
 		return statusCd;
-	}
-
-	public String getCollectionName(String genre) {
-
-		String collectionName = "";
-
-		try {
-			switch (genre.toLowerCase()) {
-				case "mystery and suspense":
-					collectionName = "col_mystery";
-					break;
-
-				case "comedy":
-					collectionName = "col_comedy";
-					break;
-
-				case "scifi":
-					collectionName = "col_scifi";
-					break;
-
-				case "fantasy":
-					collectionName = "col_fantasy";
-					break;
-
-				case "love and romance":
-					collectionName = "col_romance";
-					break;
-
-				case "children":
-					collectionName = "col_children";
-					break;
-
-				case "drama":
-					collectionName = "col_drama";
-					break;
-
-				case "horror":
-					collectionName = "col_horror";
-					break;
-
-				default:
-					collectionName = "";
-			}
-		}
-		catch(Exception e) {
-			collectionName = "";
-			logger.log(
-				Level.SEVERE, this.getClass().getName() + ".getCollectionName(): ", e);
-		}
-		finally {}
-
-		return collectionName;
 	}
 
 }

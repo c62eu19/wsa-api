@@ -20,7 +20,7 @@ public class DbContactUs {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_contact_us");
+				new DbMongo().getCollection(request.getServletContext(), "col_contact_us");
 
 			Document doc = new Document();
 

@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebListener;
 
 import com.mongodb.MongoClient;
 import com.story.db.DbMongo;
+import com.story.db.DbStory;
 
 @WebListener
 public class MongoListener implements ServletContextListener {
@@ -23,7 +24,7 @@ public class MongoListener implements ServletContextListener {
 			logger.log(Level.INFO, "MongoListener(): contextInitialized()");
 
 			// Get a handle to the servlet context
-			MongoClient mongoClient = DbMongo.createMongoClient();
+			MongoClient mongoClient = new DbMongo().createMongoClient();
 
 			ServletContext ctx = sce.getServletContext();
 

@@ -32,7 +32,7 @@ public class DbUser {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 
 			cur = collection.find(and(eq("email", argEmail), eq("password", argEncryptedPword))).iterator();
 
@@ -95,7 +95,7 @@ public class DbUser {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 
 			// Check if the email is already registered
 			Document query = new Document();
@@ -120,7 +120,7 @@ public class DbUser {
 
 		try {
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 			
 			Document doc = new Document();
 
@@ -151,7 +151,7 @@ public class DbUser {
 		try
 		{
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
@@ -181,7 +181,7 @@ public class DbUser {
 		try
 		{
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
@@ -206,7 +206,7 @@ public class DbUser {
 		try
 		{
 			MongoCollection<Document> collection = 
-				DbMongo.getCollection(request.getServletContext(), "col_users");
+				new DbMongo().getCollection(request.getServletContext(), "col_users");
 
 			collection.updateOne(eq(
 				"_id", new ObjectId(id)),
