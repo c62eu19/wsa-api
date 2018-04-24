@@ -1,3 +1,8 @@
-The OpenShift `jbossas` cartridge documentation can be found at:
+Who's Story is it Anyway?
 
-http://openshift.github.io/documentation/oo_cartridge_guide.html#jbossas
+This repo consists of the REST API for this project.  
+
+Technologies:
+	Java 8
+	JEE
+	Mongo
